@@ -5,277 +5,414 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Task Manager</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 <style>
 :root {
-  --bg: #F7F6F2;
-  --surface: #FFFFFF;
-  --surface2: #F0EEE8;
-  --border: rgba(0,0,0,0.08);
-  --border-md: rgba(0,0,0,0.14);
-  --text: #1A1916;
-  --text-2: #6B6860;
-  --text-3: #9E9C96;
-  --radius: 12px;
-  --radius-sm: 8px;
-  --radius-lg: 16px;
-  --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.04);
-  --font: 'DM Sans', sans-serif;
-  --font-mono: 'DM Mono', monospace;
+  --bg:#F7F6F2;--surface:#FFFFFF;--surface2:#F0EEE8;--surface3:#E8E6DF;
+  --border:rgba(0,0,0,0.07);--border-md:rgba(0,0,0,0.13);
+  --text:#1A1916;--text-2:#6B6860;--text-3:#9E9C96;
+  --radius:12px;--radius-sm:8px;--radius-lg:16px;
+  --shadow:0 1px 3px rgba(0,0,0,0.06),0 4px 12px rgba(0,0,0,0.04);
+  --shadow-lg:0 8px 40px rgba(0,0,0,0.12);
+  --font:'DM Sans',sans-serif;--font-mono:'DM Mono',monospace;
+}
+@media(prefers-color-scheme:dark){
+  :root{--bg:#141412;--surface:#1E1D1A;--surface2:#272521;--surface3:#302E2A;
+  --border:rgba(255,255,255,0.07);--border-md:rgba(255,255,255,0.13);
+  --text:#F0EDE6;--text-2:#9E9C96;--text-3:#6B6860;}
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh}
 
-  --purple-accent: #534AB7; --purple-light: #EEEDFE; --purple-text: #3C3489;
-  --pink-accent:   #D4537E; --pink-light:   #FBEAF0; --pink-text:   #72243E;
-  --teal-accent:   #1D9E75; --teal-light:   #E1F5EE; --teal-text:   #085041;
-  --amber-accent:  #BA7517; --amber-light:  #FAEEDA; --amber-text:  #633806;
-  --blue-accent:   #378ADD; --blue-light:   #E6F1FB; --blue-text:   #0C447C;
-  --coral-accent:  #D85A30; --coral-light:  #FAECE7; --coral-text:  #712B13;
-  --green-accent:  #639922; --green-light:  #EAF3DE; --green-text:  #27500A;
-  --red-accent:    #A32D2D; --red-light:    #FCEBEB; --red-text:    #501313;
-  --gray-accent:   #5F5E5A; --gray-light:   #F1EFE8; --gray-text:   #2C2C2A;
+/* AUTH */
+#auth-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px}
+.auth-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:44px 40px;width:min(420px,100%);text-align:center;box-shadow:var(--shadow-lg)}
+.auth-logo{width:48px;height:48px;background:var(--text);border-radius:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.auth-logo i{font-size:24px;color:var(--bg)}
+.auth-title{font-size:22px;font-weight:600;letter-spacing:-0.02em;margin-bottom:8px}
+.auth-sub{font-size:14px;color:var(--text-2);margin-bottom:32px;line-height:1.6}
+.auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.auth-divider span{font-size:12px;color:var(--text-3)}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border-md)}
+.auth-error{display:none;background:#FCEBEB;color:#A32D2D;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;margin-top:16px;text-align:left}
+.auth-footer{font-size:12px;color:var(--text-3);margin-top:24px;line-height:1.6}
+.auth-toggle{font-size:13px;color:var(--text-2);margin-top:16px}
+.auth-toggle a{color:var(--text);font-weight:500;cursor:pointer;text-decoration:underline}
+
+/* APP SHELL */
+#app-screen{display:none;min-height:100vh}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;height:54px;position:sticky;top:0;z-index:50;gap:0}
+.topbar-brand{font-size:15px;font-weight:600;letter-spacing:-0.01em;margin-right:28px;white-space:nowrap}
+.tabs{display:flex;gap:0;height:100%;flex:1;overflow-x:auto}
+.tab{height:100%;padding:0 15px;display:flex;align-items:center;gap:6px;font-size:14px;color:var(--text-2);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;font-family:var(--font);background:none;border-top:none;border-left:none;border-right:none}
+.tab:hover{color:var(--text)}
+.tab.active{color:var(--text);border-bottom-color:var(--text)}
+.tab i{font-size:16px}
+.topbar-right{margin-left:auto;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.notif-btn{position:relative;background:none;border:none;cursor:pointer;color:var(--text-2);font-size:20px;padding:4px;display:flex;align-items:center}
+.notif-btn:hover{color:var(--text)}
+.notif-badge{position:absolute;top:2px;right:2px;width:8px;height:8px;border-radius:50%;background:#E24B4A;border:2px solid var(--surface);display:none}
+.notif-badge.show{display:block}
+.user-pill{display:flex;align-items:center;gap:8px;padding:4px 10px 4px 4px;border-radius:20px;background:var(--surface2);border:1px solid var(--border);cursor:pointer}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--surface3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:var(--text-2);overflow:hidden}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-size:12px;font-weight:500;color:var(--text-2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-role-badge{font-size:10px;font-weight:600;padding:1px 6px;border-radius:20px;background:var(--surface3);color:var(--text-2)}
+.main{padding:24px;max-width:1100px;margin:0 auto;width:100%}
+
+/* BUTTONS */
+button{font-family:var(--font);cursor:pointer;font-size:14px;transition:all .15s}
+.btn{background:var(--surface);border:1px solid var(--border-md);color:var(--text);padding:7px 14px;border-radius:var(--radius-sm);display:inline-flex;align-items:center;gap:6px;font-family:var(--font)}
+.btn:hover{background:var(--surface2)}
+.btn:active{transform:scale(0.98)}
+.btn:disabled{opacity:0.4;cursor:not-allowed}
+.btn-primary{background:var(--text);border-color:var(--text);color:var(--bg)}
+.btn-primary:hover{opacity:0.88;background:var(--text)}
+.btn-danger{background:#FCEBEB;border-color:transparent;color:#A32D2D}
+.btn-success{background:#E1F5EE;border-color:transparent;color:#085041}
+.btn-sm{font-size:12px;padding:5px 10px}
+.btn-lg{font-size:15px;padding:10px 20px;border-radius:var(--radius-sm)}
+.icon-btn{background:none;border:none;color:var(--text-3);padding:5px;border-radius:var(--radius-sm);display:inline-flex;align-items:center;font-size:16px}
+.icon-btn:hover{background:var(--surface2);color:var(--text-2)}
+
+/* FORMS */
+input,select,textarea{font-family:var(--font);font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--border-md);border-radius:var(--radius-sm);padding:9px 12px;width:100%;outline:none;transition:border-color .15s}
+input:focus,select:focus,textarea:focus{border-color:var(--text-2)}
+textarea{min-height:80px;resize:vertical}
+label{display:block;font-size:12px;color:var(--text-2);margin-bottom:5px;font-weight:500}
+.field{margin-bottom:14px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-hint{font-size:12px;color:var(--text-3);margin-top:4px}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border-md);padding:26px;width:min(500px,100%);max-height:90vh;overflow-y:auto;box-shadow:var(--shadow-lg)}
+.modal-sm{width:min(380px,100%)}
+.modal h2{font-size:18px;font-weight:600;margin-bottom:20px;letter-spacing:-0.01em}
+.modal-footer{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* NOTIFICATIONS */
+.notif-panel{position:fixed;top:58px;right:16px;width:340px;max-height:480px;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);z-index:100;display:none;overflow:hidden;flex-direction:column}
+.notif-panel.open{display:flex}
+.notif-panel-header{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.notif-panel-header h3{font-size:14px;font-weight:600}
+.notif-list{overflow-y:auto;flex:1}
+.notif-item{padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s}
+.notif-item:hover{background:var(--surface2)}
+.notif-item.unread{background:var(--surface2)}
+.notif-item-text{font-size:13px;color:var(--text);line-height:1.5}
+.notif-item-time{font-size:11px;color:var(--text-3);margin-top:3px}
+.notif-empty{padding:32px 16px;text-align:center;font-size:13px;color:var(--text-3)}
+
+/* PAGE */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:12px;flex-wrap:wrap}
+.page-header h2{font-size:18px;font-weight:600;letter-spacing:-0.01em}
+.page-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+/* PERSONAL TASK MANAGER */
+.toolbar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.toolbar input{flex:1;min-width:140px}
+.toolbar select{width:auto}
+.cat-filter{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.cat-pill{font-size:12px;padding:4px 12px;border-radius:20px;border:1px solid var(--border-md);background:var(--surface);color:var(--text-2);cursor:pointer;transition:all .15s;font-family:var(--font)}
+.stats-bar{display:flex;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 14px;font-size:13px;color:var(--text-2)}
+.stat strong{font-weight:600;color:var(--text);margin-right:4px}
+
+/* TASK GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;cursor:pointer;transition:border-color .15s,box-shadow .15s;position:relative;overflow:hidden}
+.task-card:hover{border-color:var(--border-md);box-shadow:var(--shadow)}
+.task-card-accent{position:absolute;top:0;left:0;right:0;height:3px}
+.task-card-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin:8px 0 10px}
+.task-card-title{font-size:14px;font-weight:500;color:var(--text);line-height:1.4;flex:1}
+.task-card.done .task-card-title{text-decoration:line-through;color:var(--text-3)}
+.task-card-meta{display:flex;flex-direction:column;gap:5px}
+.done-check{width:19px;height:19px;border-radius:50%;border:1.5px solid var(--border-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;transition:all .15s}
+.done-check.checked{background:#1D9E75;border-color:#1D9E75}
+.done-check.checked i{color:#fff}
+.done-check i{font-size:11px;color:transparent}
+.tag{font-size:11px;font-weight:500;padding:2px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;width:fit-content}
+.due-row{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-2)}
+.due-row.overdue{color:#A32D2D}
+.recur-badge{font-size:11px;color:var(--text-3);display:flex;align-items:center;gap:4px}
+.note-snippet{font-size:12px;color:var(--text-2);line-height:1.5;border-top:1px solid var(--border);margin-top:8px;padding-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.urgency-bar{height:3px;border-radius:2px;width:100%}
+.urgency-label{font-size:11px;font-weight:500;flex-shrink:0}
+
+/* WORKPLAN */
+.spotlight{border-radius:var(--radius-lg);border:1.5px solid #A32D2D;background:var(--surface);padding:18px 20px;margin-bottom:18px}
+.spotlight-eyebrow{font-size:11px;font-weight:600;letter-spacing:.06em;color:#A32D2D;margin-bottom:8px;display:flex;align-items:center;gap:5px;text-transform:uppercase}
+.spotlight-name{font-size:20px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:-0.01em}
+.spotlight-reason{font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.6}
+.sp-task{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid var(--border)}
+.sp-task-name{flex:1;font-size:13px}
+.sp-task-name.done-t{text-decoration:line-through;color:var(--text-3)}
+.sp-due{font-size:12px;font-weight:500}
+.sp-due.overdue{color:#A32D2D}
+.sp-due.today{color:#BA7517}
+.project-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden;box-shadow:var(--shadow)}
+.project-header{display:flex;align-items:center;gap:12px;padding:14px 16px;cursor:pointer}
+.project-stripe{width:4px;border-radius:2px;flex-shrink:0;align-self:stretch;min-height:36px}
+.project-info{flex:1;min-width:0}
+.project-name{font-size:14px;font-weight:600;color:var(--text)}
+.project-goal{font-size:12px;color:var(--text-2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.project-due-label{font-size:11px;color:var(--text-3);margin-top:3px}
+.project-due-label.overdue{color:#A32D2D}
+.project-right{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.urgency-chip{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;flex-shrink:0}
+.progress-ring{position:relative;width:36px;height:36px;flex-shrink:0}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-pct{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--text);font-family:var(--font-mono)}
+.project-body{padding:10px 16px 14px;border-top:1px solid var(--border)}
+.proj-task-row{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.proj-task-row:last-of-type{border-bottom:none}
+.proj-task-name{flex:1;font-size:13px}
+.proj-task-name.done-t{text-decoration:line-through;color:var(--text-3)}
+.proj-due{font-size:12px}
+.proj-due.overdue{color:#A32D2D}
+.proj-due.soon{color:#BA7517}
+.add-to-proj{font-size:12px;color:var(--text-3);display:flex;align-items:center;gap:5px;cursor:pointer;padding-top:10px;margin-top:4px;border-top:1px solid var(--border)}
+.add-to-proj:hover{color:var(--text-2)}
+
+/* EXPORT */
+.export-panel{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin-bottom:18px}
+.export-panel-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.export-list{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.export-item{display:flex;align-items:center;gap:10px;padding:10px 13px;background:var(--surface);border-radius:var(--radius-sm);border:1px solid var(--border);cursor:pointer;transition:border-color .15s}
+.export-item:hover{border-color:var(--border-md)}
+.export-item.selected{border-color:var(--text-2)}
+.export-check{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border-md);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.export-check.checked{background:var(--text);border-color:var(--text)}
+.export-check.checked i{color:var(--bg)}
+.export-check i{font-size:10px;color:transparent}
+.export-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.export-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.export-note{font-size:12px;color:var(--text-3);flex:1}
+
+/* CATEGORIES */
+.cat-list-admin{display:flex;flex-direction:column;gap:8px}
+.cat-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm)}
+.cat-swatch{width:20px;height:20px;border-radius:50%;flex-shrink:0}
+.cat-item-name{flex:1;font-size:14px;font-weight:500}
+.color-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.color-opt{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all .15s}
+.color-opt.sel{border-color:var(--text);transform:scale(1.1)}
+
+/* ADMIN */
+.admin-section{margin-bottom:32px}
+.admin-section h3{font-size:15px;font-weight:600;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border)}
+.user-table{width:100%;border-collapse:collapse}
+.user-table th{font-size:12px;font-weight:500;color:var(--text-2);text-align:left;padding:8px 12px;border-bottom:1px solid var(--border)}
+.user-table td{font-size:13px;padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.user-table tr:last-child td{border-bottom:none}
+.user-table tr:hover td{background:var(--surface2)}
+.role-badge{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.role-super{background:#EEEDFE;color:#3C3489}
+.role-admin{background:#E1F5EE;color:#085041}
+.role-member{background:var(--surface2);color:var(--text-2)}
+.invite-link-box{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;font-family:var(--font-mono);font-size:12px;color:var(--text-2);word-break:break-all;margin:12px 0}
+
+/* MISC */
+.empty{text-align:center;padding:4rem 1rem;color:var(--text-3);font-size:14px}
+.empty i{font-size:36px;display:block;margin-bottom:12px;opacity:0.5}
+.empty p{margin-bottom:16px}
+.spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border-md);border-top-color:var(--text-2);border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;flex-direction:column;gap:16px;color:var(--text-2);font-size:14px}
+.score-info{background:var(--surface2);border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:var(--text-2);line-height:1.8;margin-bottom:14px}
+
+@media(max-width:768px){
+  .tabs{gap:0}.tab{padding:0 11px;font-size:13px}
+  .page-header{flex-direction:column;align-items:flex-start}
+  .page-actions{width:100%}
+  .user-table{font-size:12px}
+  .user-table td,.user-table th{padding:7px 8px}
+  .modal{padding:18px}
+  .notif-panel{width:calc(100vw - 32px);right:16px}
+}
+@media(max-width:640px){
+  .main{padding:16px}.topbar{padding:0 16px}
+  .topbar-brand{display:none}.user-name{display:none}
+  .two-col{grid-template-columns:1fr}
+  .grid{grid-template-columns:1fr 1fr}
+  .stats-bar{gap:6px}
+  .stat{padding:6px 10px;font-size:12px}
+  .spotlight{padding:14px 16px}
+  .spotlight-name{font-size:17px}
+  .tab i{margin-right:0!important}
+  .tab span.tab-label{display:none}
+  .export-footer{flex-direction:column;align-items:stretch}
+  .export-footer .btn{justify-content:center}
+}
+@media(max-width:400px){
+  .grid{grid-template-columns:1fr}
+  .project-right{gap:6px}
+  .urgency-chip{display:none}
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #141412;
-    --surface: #1E1D1A;
-    --surface2: #272521;
-    --border: rgba(255,255,255,0.08);
-    --border-md: rgba(255,255,255,0.14);
-    --text: #F0EDE6;
-    --text-2: #9E9C96;
-    --text-3: #6B6860;
-  }
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { font-size: 16px; }
-body { font-family: var(--font); background: var(--bg); color: var(--text); min-height: 100vh; }
-
-/* Layout */
-.app { display: grid; grid-template-rows: auto 1fr; min-height: 100vh; }
-.topbar { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; gap: 0; height: 52px; }
-.topbar-brand { font-size: 15px; font-weight: 600; color: var(--text); margin-right: 32px; letter-spacing: -0.01em; }
-.tabs { display: flex; gap: 2px; height: 100%; }
-.tab { height: 100%; padding: 0 16px; display: flex; align-items: center; gap: 7px; font-size: 14px; color: var(--text-2); cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; white-space: nowrap; }
-.tab:hover { color: var(--text); }
-.tab.active { color: var(--text); border-bottom-color: var(--text); }
-.tab i { font-size: 16px; }
-.topbar-right { margin-left: auto; display: flex; align-items: center; gap: 8px; }
-
-.main { padding: 24px; max-width: 1100px; margin: 0 auto; width: 100%; }
-
-/* Buttons */
-button { font-family: var(--font); cursor: pointer; font-size: 14px; transition: all .15s; }
-.btn { background: var(--surface); border: 1px solid var(--border-md); color: var(--text); padding: 7px 14px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; gap: 6px; }
-.btn:hover { background: var(--surface2); }
-.btn:active { transform: scale(0.98); }
-.btn-primary { background: var(--text); border-color: var(--text); color: var(--bg); }
-.btn-primary:hover { opacity: 0.88; background: var(--text); }
-.btn-danger { background: var(--red-light); border-color: transparent; color: var(--red-text); }
-.btn-danger:hover { opacity: 0.85; }
-.btn-sm { font-size: 12px; padding: 5px 10px; }
-.icon-btn { background: none; border: none; color: var(--text-3); padding: 5px; border-radius: var(--radius-sm); display: inline-flex; align-items: center; font-size: 16px; }
-.icon-btn:hover { background: var(--surface2); color: var(--text-2); }
-
-/* Forms */
-input, select, textarea { font-family: var(--font); font-size: 14px; color: var(--text); background: var(--surface); border: 1px solid var(--border-md); border-radius: var(--radius-sm); padding: 8px 12px; width: 100%; outline: none; transition: border-color .15s; }
-input:focus, select:focus, textarea:focus { border-color: var(--text-2); }
-textarea { min-height: 72px; resize: vertical; }
-label { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5px; font-weight: 500; }
-.field { margin-bottom: 14px; }
-.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-
-/* Cards */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
-
-/* Toolbar */
-.toolbar { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-.toolbar input { flex: 1; min-width: 160px; }
-.toolbar select { width: auto; }
-
-/* Cat filter */
-.cat-filter { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
-.cat-pill { font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border-md); background: var(--surface); color: var(--text-2); cursor: pointer; transition: all .15s; font-family: var(--font); }
-.cat-pill:hover { border-color: var(--border-md); color: var(--text); }
-
-/* Stats */
-.stats-bar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px; font-size: 13px; color: var(--text-2); }
-.stat strong { font-weight: 600; color: var(--text); margin-right: 4px; }
-
-/* Task grid */
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
-.task-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px; cursor: pointer; transition: border-color .15s, box-shadow .15s; position: relative; overflow: hidden; }
-.task-card:hover { border-color: var(--border-md); box-shadow: var(--shadow); }
-.task-card-accent { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
-.task-card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin: 8px 0 10px; }
-.task-card-title { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.4; flex: 1; }
-.task-card.done .task-card-title { text-decoration: line-through; color: var(--text-3); }
-.task-card-meta { display: flex; flex-direction: column; gap: 5px; }
-
-/* Done check */
-.done-check { width: 19px; height: 19px; border-radius: 50%; border: 1.5px solid var(--border-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer; transition: all .15s; }
-.done-check.checked { background: var(--teal-accent); border-color: var(--teal-accent); }
-.done-check.checked i { color: #fff; }
-.done-check i { font-size: 11px; color: transparent; }
-
-/* Tag / badge */
-.tag { font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 20px; display: inline-flex; align-items: center; gap: 4px; width: fit-content; }
-.due-row { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--text-2); }
-.due-row.overdue { color: var(--red-accent); }
-.recur-badge { font-size: 11px; color: var(--text-3); display: flex; align-items: center; gap: 4px; }
-.note-snippet { font-size: 12px; color: var(--text-2); line-height: 1.5; border-top: 1px solid var(--border); margin-top: 8px; padding-top: 8px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.urgency-bar { height: 3px; border-radius: 2px; width: 100%; }
-.urgency-label { font-size: 11px; font-weight: 500; flex-shrink: 0; }
-
-/* Empty */
-.empty { text-align: center; padding: 4rem 1rem; color: var(--text-3); font-size: 14px; }
-.empty i { font-size: 32px; display: block; margin-bottom: 10px; }
-
-/* Workplan */
-.wp-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; gap: 8px; flex-wrap: wrap; }
-.wp-header h2 { font-size: 17px; font-weight: 600; }
-.wp-actions { display: flex; gap: 8px; }
-
-/* Spotlight */
-.spotlight { border-radius: var(--radius-lg); border: 1.5px solid var(--red-accent); background: var(--surface); padding: 18px 20px; margin-bottom: 18px; }
-.spotlight-eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .06em; color: var(--red-accent); margin-bottom: 8px; display: flex; align-items: center; gap: 5px; text-transform: uppercase; }
-.spotlight-name { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 4px; letter-spacing: -0.01em; }
-.spotlight-reason { font-size: 13px; color: var(--text-2); margin-bottom: 14px; line-height: 1.6; }
-.sp-task { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-top: 1px solid var(--border); }
-.sp-task-name { flex: 1; font-size: 13px; }
-.sp-task-name.done-t { text-decoration: line-through; color: var(--text-3); }
-.sp-due { font-size: 12px; font-weight: 500; }
-.sp-due.overdue { color: var(--red-accent); }
-.sp-due.today { color: var(--amber-accent); }
-.spotlight-actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-
-/* Project cards */
-.project-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
-.project-header { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; }
-.project-stripe { width: 4px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 36px; }
-.project-info { flex: 1; min-width: 0; }
-.project-name { font-size: 14px; font-weight: 600; color: var(--text); letter-spacing: -0.01em; }
-.project-goal { font-size: 12px; color: var(--text-2); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.project-due { font-size: 11px; color: var(--text-3); margin-top: 3px; }
-.project-due.overdue { color: var(--red-accent); }
-.project-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
-.urgency-chip { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; flex-shrink: 0; }
-.progress-ring { position: relative; width: 36px; height: 36px; flex-shrink: 0; }
-.progress-ring svg { transform: rotate(-90deg); }
-.progress-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 600; color: var(--text); font-family: var(--font-mono); }
-.project-body { padding: 10px 16px 14px; border-top: 1px solid var(--border); }
-.proj-task-row { display: flex; align-items: center; gap: 9px; padding: 7px 0; border-bottom: 1px solid var(--border); }
-.proj-task-row:last-of-type { border-bottom: none; }
-.proj-task-name { flex: 1; font-size: 13px; }
-.proj-task-name.done-t { text-decoration: line-through; color: var(--text-3); }
-.proj-due { font-size: 12px; }
-.proj-due.overdue { color: var(--red-accent); }
-.proj-due.soon { color: var(--amber-accent); }
-.add-to-proj { font-size: 12px; color: var(--text-3); display: flex; align-items: center; gap: 5px; cursor: pointer; padding-top: 10px; margin-top: 4px; border-top: 1px solid var(--border); }
-.add-to-proj:hover { color: var(--text-2); }
-
-/* Export panel */
-.export-panel { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; margin-bottom: 18px; }
-.export-panel-title { font-size: 14px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
-.export-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
-.export-item { display: flex; align-items: center; gap: 10px; padding: 10px 13px; background: var(--surface); border-radius: var(--radius-sm); border: 1px solid var(--border); cursor: pointer; transition: border-color .15s; }
-.export-item:hover { border-color: var(--border-md); }
-.export-item.selected { border-color: var(--text-2); }
-.export-check { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--border-md); display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
-.export-check.checked { background: var(--text); border-color: var(--text); }
-.export-check.checked i { color: var(--bg); }
-.export-check i { font-size: 10px; color: transparent; }
-.export-swatch { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
-.export-footer { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-.export-note { font-size: 12px; color: var(--text-3); flex: 1; }
-
-/* Categories */
-.cat-list { display: flex; flex-direction: column; gap: 8px; }
-.cat-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
-.cat-swatch { width: 20px; height: 20px; border-radius: 50%; flex-shrink: 0; }
-.cat-item-name { flex: 1; font-size: 14px; font-weight: 500; }
-.color-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
-.color-opt { width: 24px; height: 24px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: all .15s; }
-.color-opt.sel { border-color: var(--text); transform: scale(1.1); }
-
-/* Modal */
-.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
-.modal-overlay.open { display: flex; }
-.modal { background: var(--surface); border-radius: var(--radius-lg); border: 1px solid var(--border-md); padding: 24px; width: min(480px, 100%); max-height: 90vh; overflow-y: auto; box-shadow: 0 8px 40px rgba(0,0,0,0.15); }
-.modal h2 { font-size: 17px; font-weight: 600; margin-bottom: 18px; letter-spacing: -0.01em; }
-.modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
-.score-info { background: var(--surface2); border-radius: var(--radius-sm); padding: 10px 14px; font-size: 12px; color: var(--text-2); line-height: 1.8; margin-top: -4px; margin-bottom: 14px; }
-
-/* Responsive */
-@media (max-width: 600px) {
-  .main { padding: 16px; }
-  .topbar { padding: 0 16px; }
-  .grid { grid-template-columns: 1fr 1fr; }
-  .two-col { grid-template-columns: 1fr; }
-  .topbar-brand { display: none; }
-}
-@media (max-width: 400px) {
-  .grid { grid-template-columns: 1fr; }
-}
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:300;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--text);color:var(--bg);padding:10px 16px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);pointer-events:all;display:flex;align-items:center;gap:8px;animation:slideIn .2s ease;max-width:320px}
+.toast.success{background:#1D9E75}
+.toast.error{background:#A32D2D}
+.toast.warning{background:#BA7517}
+@keyframes slideIn{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(120%);opacity:0}}
 </style>
 </head>
 <body>
-<div class="app">
 
-<header class="topbar">
-  <div class="topbar-brand">My Tasks</div>
-  <nav class="tabs">
-    <div class="tab active" onclick="switchTab('tasks')"><i class="ti ti-checklist"></i> Tasks</div>
-    <div class="tab" onclick="switchTab('workplan')"><i class="ti ti-layout-list"></i> Workplan</div>
-    <div class="tab" onclick="switchTab('categories')"><i class="ti ti-tag"></i> Categories</div>
-  </nav>
-</header>
+<div id="loading-screen" class="loading-screen"><div class="spinner"></div><span>Loading…</span></div>
+<div class="toast-container" id="toast-container"></div>
 
-<main class="main">
-  <!-- Tasks -->
-  <div id="view-tasks">
-    <div class="toolbar">
-      <input type="text" id="search" placeholder="Search tasks…" oninput="renderTasks()">
-      <select id="sort-by" onchange="renderTasks()">
-        <option value="due">Due date</option>
-        <option value="urgency">Urgency</option>
-        <option value="created">Newest</option>
-      </select>
-      <button class="btn" onclick="openTaskModal(null)"><i class="ti ti-plus"></i> Add task</button>
-    </div>
-    <div class="cat-filter" id="cat-filter"></div>
-    <div class="stats-bar" id="stats-bar"></div>
-    <div class="grid" id="grid"></div>
+<!-- AUTH -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="ti ti-checklist"></i></div>
+    <div class="auth-title">Task Manager</div>
+    <div class="auth-sub" id="auth-sub">Sign in to access your workspace.</div>
+    <button class="btn btn-lg" style="width:100%;justify-content:center;gap:10px" onclick="signInGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-divider"><span>or</span></div>
+    <div class="field"><input type="email" id="auth-email" placeholder="Email address"></div>
+    <div class="field"><input type="password" id="auth-password" placeholder="Password" onkeydown="if(event.key==='Enter')submitEmailAuth()"></div>
+    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center" onclick="submitEmailAuth()" id="email-auth-btn">Sign in</button>
+    <div class="auth-toggle" id="auth-toggle-text">Don't have an account? <a onclick="toggleAuthMode()">Create one</a></div>
+    <div class="auth-error" id="auth-error"></div>
+    <div class="auth-footer">Access is by invitation only.</div>
   </div>
-
-  <!-- Workplan -->
-  <div id="view-workplan" style="display:none">
-    <div class="wp-header">
-      <h2>Workplan</h2>
-      <div class="wp-actions">
-        <button class="btn" onclick="toggleExport()"><i class="ti ti-file-text"></i> Export to Word</button>
-        <button class="btn" onclick="openProjectModal(null)"><i class="ti ti-plus"></i> New project</button>
-      </div>
-    </div>
-    <div id="export-panel" style="display:none"></div>
-    <div id="spotlight-area"></div>
-    <div id="projects-list"></div>
-  </div>
-
-  <!-- Categories -->
-  <div id="view-categories" style="display:none">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <h2 style="font-size:17px;font-weight:600">Categories</h2>
-      <button class="btn" onclick="openCatModal(null)"><i class="ti ti-plus"></i> New category</button>
-    </div>
-    <div class="cat-list" id="cat-list"></div>
-  </div>
-</main>
 </div>
 
-<!-- Task modal -->
+<!-- INVITE SCREEN -->
+<div id="invite-screen" style="display:none;align-items:center;justify-content:center;min-height:100vh;padding:24px;">
+  <div class="auth-card">
+    <div class="auth-logo"><i class="ti ti-mail-check"></i></div>
+    <div class="auth-title">You've been invited</div>
+    <div class="auth-sub">Create your account to join the workspace.</div>
+    <div class="field"><input type="text" id="invite-name" placeholder="Your full name"></div>
+    <div class="field"><input type="email" id="invite-email" placeholder="Email address"></div>
+    <div class="field"><input type="password" id="invite-password" placeholder="Choose a password (min 6 chars)"></div>
+    <button class="btn btn-primary btn-lg" style="width:100%;justify-content:center;margin-bottom:12px" onclick="redeemInvite()">Create account</button>
+    <div class="auth-divider"><span>or</span></div>
+    <button class="btn btn-lg" style="width:100%;justify-content:center;gap:10px" onclick="redeemInviteGoogle()">
+      <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332A8.997 8.997 0 0 0 9 18z"/><path fill="#FBBC05" d="M3.964 10.71A5.41 5.41 0 0 1 3.682 9c0-.593.102-1.17.282-1.71V4.958H.957A8.996 8.996 0 0 0 0 9c0 1.452.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0A8.997 8.997 0 0 0 .957 4.958L3.964 6.29C4.672 4.163 6.656 3.58 9 3.58z"/></svg>
+      Continue with Google
+    </button>
+    <div class="auth-error" id="invite-error"></div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app-screen">
+  <header class="topbar">
+    <div class="topbar-brand">Task Manager</div>
+    <nav class="tabs" id="main-tabs">
+      <button class="tab active" onclick="switchTab('personal')"><i class="ti ti-checklist"></i> My Tasks</button>
+      <button class="tab" onclick="switchTab('workplan')"><i class="ti ti-layout-list"></i> Workplan</button>
+      <button class="tab" onclick="switchTab('categories')"><i class="ti ti-tag"></i> Categories</button>
+      <button class="tab" onclick="switchTab('group')"><i class="ti ti-users"></i> Group Projects</button>
+      <button class="tab" id="admin-tab" style="display:none" onclick="switchTab('admin')"><i class="ti ti-shield"></i> Admin</button>
+    </nav>
+    <div class="topbar-right">
+      <button class="notif-btn" onclick="toggleNotifPanel()" id="notif-btn" aria-label="Notifications">
+        <i class="ti ti-bell"></i><div class="notif-badge" id="notif-badge"></div>
+      </button>
+      <div class="user-pill" onclick="toggleUserMenu()">
+        <div class="user-avatar" id="topbar-avatar"></div>
+        <span class="user-name" id="topbar-name"></span>
+        <span class="user-role-badge" id="topbar-role"></span>
+      </div>
+    </div>
+  </header>
+
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-panel-header"><h3>Notifications</h3><button class="btn btn-sm" onclick="markAllNotifsRead()">Mark all read</button></div>
+    <div class="notif-list" id="notif-list"></div>
+  </div>
+
+  <div id="user-menu" style="display:none;position:fixed;top:58px;right:16px;background:var(--surface);border:1px solid var(--border-md);border-radius:var(--radius);box-shadow:var(--shadow-lg);z-index:100;min-width:180px;overflow:hidden;">
+    <div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+      <div style="font-size:13px;font-weight:500" id="menu-name"></div>
+      <div style="font-size:12px;color:var(--text-2)" id="menu-email"></div>
+    </div>
+    <button onclick="doSignOut()" style="width:100%;text-align:left;padding:10px 16px;background:none;border:none;font-size:13px;color:var(--text-2);cursor:pointer;display:flex;align-items:center;gap:8px;" onmouseover="this.style.background='var(--surface2)'" onmouseout="this.style.background='none'">
+      <i class="ti ti-logout" style="font-size:16px"></i> Sign out
+    </button>
+  </div>
+
+  <main class="main">
+    <!-- MY TASKS -->
+    <div id="view-personal">
+      <div class="page-header">
+        <h2>My Tasks</h2>
+        <div class="page-actions">
+          <select id="sort-by" onchange="renderTasks()" style="width:auto">
+            <option value="due">Sort: due date</option>
+            <option value="urgency">Sort: urgency</option>
+            <option value="created">Sort: newest</option>
+          </select>
+          <input type="text" id="search" placeholder="Search…" oninput="renderTasks()" style="width:160px">
+          <button class="btn btn-primary" onclick="openTaskModal(null)"><i class="ti ti-plus"></i> Add task</button>
+        </div>
+      </div>
+      <div class="cat-filter" id="cat-filter"></div>
+      <div class="stats-bar" id="stats-bar"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <!-- WORKPLAN -->
+    <div id="view-workplan" style="display:none">
+      <div class="page-header">
+        <h2>Workplan</h2>
+        <div class="page-actions">
+          <button class="btn" onclick="toggleExport()"><i class="ti ti-file-text"></i> Export to Word</button>
+          <button class="btn btn-primary" onclick="openProjectModal(null)"><i class="ti ti-plus"></i> New project</button>
+        </div>
+      </div>
+      <div id="export-panel" style="display:none"></div>
+      <div id="spotlight-area"></div>
+      <div id="projects-list"></div>
+    </div>
+
+    <!-- CATEGORIES -->
+    <div id="view-categories" style="display:none">
+      <div class="page-header">
+        <h2>Categories</h2>
+        <button class="btn btn-primary" onclick="openCatModal(null)"><i class="ti ti-plus"></i> New category</button>
+      </div>
+      <div class="cat-list-admin" id="cat-list"></div>
+    </div>
+
+    <!-- GROUP PROJECTS (Phase 3) -->
+    <div id="view-group" style="display:none">
+      <div class="page-header"><h2>Group Projects</h2></div>
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:32px;text-align:center;color:var(--text-2);">
+        <i class="ti ti-users" style="font-size:36px;display:block;margin-bottom:12px;opacity:0.4"></i>
+        <div style="font-size:15px;font-weight:500;margin-bottom:6px">Group projects coming in Phase 3</div>
+        <div style="font-size:13px;color:var(--text-3)">Collaborate with your team on shared projects here.</div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="view-admin" style="display:none">
+      <div class="page-header">
+        <h2>Admin Panel</h2>
+        <button class="btn btn-primary" onclick="openInviteModal()"><i class="ti ti-link"></i> Generate invite link</button>
+      </div>
+      <div class="admin-section"><h3>Active invite links</h3><div id="invites-list"><div class="spinner"></div></div></div>
+      <div class="admin-section"><h3>Users</h3><div id="users-list"><div class="spinner"></div></div></div>
+      <div class="admin-section"><h3>Group projects</h3><div id="admin-group-list"><div class="spinner"></div></div></div>
+    </div>
+  </main>
+</div>
+
+<!-- TASK MODAL -->
 <div class="modal-overlay" id="task-modal-bg" onclick="if(event.target===this)closeTaskModal()">
 <div class="modal">
   <h2 id="task-modal-title">New task</h2>
@@ -299,7 +436,7 @@ label { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5p
 </div>
 </div>
 
-<!-- Project modal -->
+<!-- PROJECT MODAL -->
 <div class="modal-overlay" id="proj-modal-bg" onclick="if(event.target===this)closeProjModal()">
 <div class="modal">
   <h2 id="proj-modal-title">New project</h2>
@@ -318,9 +455,9 @@ label { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5p
 </div>
 </div>
 
-<!-- Category modal -->
+<!-- CATEGORY MODAL -->
 <div class="modal-overlay" id="cat-modal-bg" onclick="if(event.target===this)closeCatModal()">
-<div class="modal">
+<div class="modal modal-sm">
   <h2 id="cat-modal-title">New category</h2>
   <div class="field"><label>Name</label><input type="text" id="cf-name" placeholder="e.g. Side project"></div>
   <div class="field"><label>Colour</label><div class="color-row" id="color-picker"></div></div>
@@ -332,7 +469,80 @@ label { display: block; font-size: 12px; color: var(--text-2); margin-bottom: 5p
 </div>
 </div>
 
-<script>
+<!-- INVITE MODAL -->
+<div class="modal-overlay" id="invite-modal" onclick="if(event.target===this)closeInviteModal()">
+<div class="modal modal-sm">
+  <h2>Generate invite link</h2>
+  <div class="field">
+    <label>Note (optional)</label>
+    <input type="text" id="invite-note" placeholder="e.g. For Sarah in marketing">
+    <div class="form-hint">Helps you remember who the link was for.</div>
+  </div>
+  <div id="invite-result" style="display:none">
+    <label>Invite link</label>
+    <div class="invite-link-box" id="invite-link-text"></div>
+    <div style="font-size:12px;color:var(--text-3)" id="invite-meta"></div>
+    <button class="btn btn-success" style="margin-top:10px;width:100%;justify-content:center" onclick="copyInviteLink()"><i class="ti ti-copy"></i> Copy link</button>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" onclick="closeInviteModal()">Close</button>
+    <button class="btn btn-primary" id="gen-invite-btn" onclick="generateInvite()"><i class="ti ti-link"></i> Generate</button>
+  </div>
+</div>
+</div>
+
+<!-- ROLE MODAL -->
+<div class="modal-overlay" id="role-modal" onclick="if(event.target===this)closeRoleModal()">
+<div class="modal modal-sm">
+  <h2 id="role-modal-title">Change role</h2>
+  <p id="role-modal-body" style="font-size:14px;color:var(--text-2);margin-bottom:20px;line-height:1.6"></p>
+  <div class="modal-footer">
+    <button class="btn" onclick="closeRoleModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="confirmRoleChange()">Confirm</button>
+  </div>
+</div>
+</div>
+
+<!-- REMOVE USER MODAL -->
+<div class="modal-overlay" id="remove-modal" onclick="if(event.target===this)closeRemoveModal()">
+<div class="modal modal-sm">
+  <h2>Remove user</h2>
+  <p id="remove-modal-body" style="font-size:14px;color:var(--text-2);margin-bottom:20px;line-height:1.6"></p>
+  <div class="modal-footer">
+    <button class="btn" onclick="closeRemoveModal()">Cancel</button>
+    <button class="btn btn-danger" onclick="confirmRemoveUser()">Remove user</button>
+  </div>
+</div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getAuth, signInWithPopup, GoogleAuthProvider,
+  createUserWithEmailAndPassword, signInWithEmailAndPassword,
+  signOut, onAuthStateChanged, updateProfile
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+import {
+  getFirestore, doc, getDoc, setDoc, updateDoc, deleteDoc, addDoc,
+  collection, query, where, getDocs, orderBy, onSnapshot,
+  serverTimestamp, Timestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ── INIT ───────────────────────────────────────────────────────────────────
+const firebaseConfig = {
+  apiKey:"AIzaSyBFPIJJluX60Qcc2Einfz5OZSar88lW_7c",
+  authDomain:"posse-task-manager.firebaseapp.com",
+  projectId:"posse-task-manager",
+  storageBucket:"posse-task-manager.firebasestorage.app",
+  messagingSenderId:"357856470377",
+  appId:"1:357856470377:web:9f913750cdd6e8ef8989f8"
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getFirestore(firebaseApp);
+const SUPER_ADMIN_EMAIL = "pkelley1194@gmail.com";
+
+// ── PALETTE ────────────────────────────────────────────────────────────────
 const PALETTE=[
   {name:'purple',accent:'#534AB7',light:'#EEEDFE',text:'#3C3489'},
   {name:'pink',  accent:'#D4537E',light:'#FBEAF0',text:'#72243E'},
@@ -344,32 +554,50 @@ const PALETTE=[
   {name:'red',   accent:'#A32D2D',light:'#FCEBEB',text:'#501313'},
   {name:'gray',  accent:'#5F5E5A',light:'#F1EFE8',text:'#2C2C2A'},
 ];
+const DEFAULT_CATS = [
+  {name:'Work',color:'purple'},{name:'Personal',color:'pink'},
+  {name:'Health',color:'teal'},{name:'Finance',color:'amber'},
+  {name:'Home',color:'blue'},{name:'Learning',color:'coral'},
+];
 
-function ls(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
-function lss(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+// ── STATE ──────────────────────────────────────────────────────────────────
+let currentUser=null, currentUserDoc=null;
+let tasks=[], projects=[], cats=[];
+let activeTab='personal', activeFilter='All';
+let editingTaskId=null, editingProjId=null, editingCatId=null, selColor='purple';
+let exportOpen=false, exportSelected=new Set();
+let openProjs={};
+let authMode='signin', pendingInviteToken=null;
+let roleChangeTarget=null, removeUserTarget=null;
+let generatedInviteLink='';
+let notifsUnsub=null, tasksUnsub=null, projectsUnsub=null, catsUnsub=null;
 
-let cats=ls('tm_cats',[
-  {id:'c1',name:'Work',color:'purple'},{id:'c2',name:'Personal',color:'pink'},
-  {id:'c3',name:'Health',color:'teal'},{id:'c4',name:'Finance',color:'amber'},
-  {id:'c5',name:'Home',color:'blue'},{id:'c6',name:'Learning',color:'coral'},
-]);
-let tasks=ls('tm_tasks',[]);
-let projects=ls('tm_projects',[]);
-let nid=ls('tm_nid',10);
-function newId(){nid++;lss('tm_nid',nid);return 'x'+nid}
-function save(){lss('tm_cats',cats);lss('tm_tasks',tasks);lss('tm_projects',projects)}
-
-let activeTab='tasks',activeFilter='All',editingTaskId=null,editingProjId=null,editingCatId=null,selColor='purple';
-let exportOpen=false,exportSelected=new Set();
-const openProjs={};
-
+// ── HELPERS ────────────────────────────────────────────────────────────────
+const $=id=>document.getElementById(id);
+function show(id){const el=$(id);if(el)el.style.display='flex'}
+function hide(id){const el=$(id);if(el)el.style.display='none'}
+function showBlock(id){const el=$(id);if(el)el.style.display='block'}
+function setText(id,v){const el=$(id);if(el)el.textContent=v}
+function showErr(id,msg){const el=$(id);if(el){el.style.display='block';el.textContent=msg}}
+function hideErr(id){const el=$(id);if(el)el.style.display='none'}
+function fmtTime(ts){
+  if(!ts)return'';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  const diff=Math.round((Date.now()-d)/60000);
+  if(diff<1)return'just now';if(diff<60)return diff+'m ago';
+  if(diff<1440)return Math.round(diff/60)+'h ago';return Math.round(diff/1440)+'d ago';
+}
+function fmtDate(ts){
+  if(!ts)return'—';
+  const d=ts.toDate?ts.toDate():new Date(ts);
+  return d.toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'});
+}
 function getColor(n){return PALETTE.find(p=>p.name===n)||PALETTE[0]}
 function getCat(id){return cats.find(c=>c.id===id)}
-function today(){const d=new Date();d.setHours(0,0,0,0);return d}
-function diffDays(d){if(!d)return null;return Math.round((new Date(d+'T00:00:00')-today())/86400000)}
+function tod(){const d=new Date();d.setHours(0,0,0,0);return d}
+function diffDays(d){if(!d)return null;return Math.round((new Date(d+'T00:00:00')-tod())/86400000)}
 function fmtDue(d){
-  if(!d)return null;
-  const diff=diffDays(d);
+  if(!d)return null;const diff=diffDays(d);
   if(diff===0)return{label:'Today',cls:'today'};
   if(diff===1)return{label:'Tomorrow',cls:''};
   if(diff<0)return{label:Math.abs(diff)+'d overdue',cls:'overdue'};
@@ -377,6 +605,7 @@ function fmtDue(d){
   return{label:new Date(d+'T00:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'}),cls:''};
 }
 
+// ── URGENCY ────────────────────────────────────────────────────────────────
 function scoreProject(p){
   const pt=tasks.filter(t=>t.proj===p.id&&!t.done);
   const all=tasks.filter(t=>t.proj===p.id);
@@ -386,7 +615,7 @@ function scoreProject(p){
   const daysLeft=p.due?diffDays(p.due):null;
   const soonCount=pt.filter(t=>t.due&&diffDays(t.due)>=0&&diffDays(t.due)<=7).length;
   let score=0;
-  score+=overdue*40; score+=incompletePct*0.5;
+  score+=overdue*40;score+=incompletePct*0.5;
   if(daysLeft!==null){if(daysLeft<0)score+=60;else if(daysLeft<=3)score+=30;else if(daysLeft<=7)score+=15;else if(daysLeft<=14)score+=7;}
   score+=soonCount*5;
   const reasons=[];
@@ -397,10 +626,10 @@ function scoreProject(p){
   if(soonCount>0&&overdue===0)reasons.push(soonCount+' task'+(soonCount>1?'s':'')+' this week');
   return{score:Math.round(score),overdue,incompletePct,daysLeft,soonCount,reasons};
 }
-function urgencyStyle(score){
-  if(score>=60)return{bg:'#FCEBEB',color:'#A32D2D',label:'Critical'};
-  if(score>=35)return{bg:'#FAEEDA',color:'#633806',label:'High'};
-  if(score>=15)return{bg:'#E6F1FB',color:'#0C447C',label:'Moderate'};
+function urgencyStyle(s){
+  if(s>=60)return{bg:'#FCEBEB',color:'#A32D2D',label:'Critical'};
+  if(s>=35)return{bg:'#FAEEDA',color:'#633806',label:'High'};
+  if(s>=15)return{bg:'#E6F1FB',color:'#0C447C',label:'Moderate'};
   return{bg:'#EAF3DE',color:'#27500A',label:'Low'};
 }
 function urgencyBarColor(s){if(s>=60)return'#E24B4A';if(s>=35)return'#EF9F27';if(s>=15)return'#378ADD';return'#639922';}
@@ -411,27 +640,192 @@ function taskUrgency(t){
   return s;
 }
 
-function switchTab(t){
-  activeTab=t;
-  ['tasks','workplan','categories'].forEach((v,i)=>{
-    document.getElementById('view-'+v).style.display=v===t?'':'none';
-    document.querySelectorAll('.tab')[i].classList.toggle('active',v===t);
-  });
-  if(t==='tasks')renderTasks();
-  if(t==='workplan')renderWorkplan();
-  if(t==='categories')renderCats();
+// ── INVITE CHECK ───────────────────────────────────────────────────────────
+function checkInviteToken(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('invite');
+  if(token)pendingInviteToken=token;
 }
 
-function renderTasks(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const sortBy=document.getElementById('sort-by').value;
-  document.getElementById('cat-filter').innerHTML=['All',...cats.map(c=>c.name)].map(name=>{
+// ── AUTH STATE ─────────────────────────────────────────────────────────────
+onAuthStateChanged(auth, async user=>{
+  hide('loading-screen');
+  if(user){
+    const userRef=doc(db,'users',user.uid);
+    const snap=await getDoc(userRef);
+    if(!snap.exists()){
+      if(user.email===SUPER_ADMIN_EMAIL){
+        const uDoc={uid:user.uid,email:user.email,displayName:user.displayName||'Admin',role:'super-admin',photoURL:user.photoURL||'',joinedAt:serverTimestamp(),lastActive:serverTimestamp()};
+        await setDoc(userRef,uDoc);
+        currentUserDoc={...uDoc,role:'super-admin'};
+        await initUserData(user.uid);
+        showApp();
+      } else if(pendingInviteToken){
+        const ok=await validateAndRedeemInvite(pendingInviteToken,user);
+        if(ok){await initUserData(user.uid);showApp();}
+        else{await signOut(auth);showAuthScreen();showErr('auth-error','This invite link is invalid or has expired.');}
+      } else {
+        await signOut(auth);showAuthScreen();showErr('auth-error','Access is by invitation only.');
+      }
+    } else {
+      currentUserDoc=snap.data();
+      await updateDoc(userRef,{lastActive:serverTimestamp()});
+      showApp();
+    }
+  } else {
+    currentUser=null;currentUserDoc=null;
+    unsubAll();
+    if(pendingInviteToken)showInviteScreen();else showAuthScreen();
+  }
+});
+
+async function initUserData(uid){
+  // Seed default categories for new users
+  const catsCol=collection(db,'users',uid,'categories');
+  const existing=await getDocs(catsCol);
+  if(existing.empty){
+    for(const cat of DEFAULT_CATS){
+      await addDoc(catsCol,{...cat,createdAt:serverTimestamp()});
+    }
+  }
+}
+
+async function validateAndRedeemInvite(token,user){
+  try{
+    const inviteRef=doc(db,'invites',token);
+    const snap=await getDoc(inviteRef);
+    if(!snap.exists())return false;
+    const inv=snap.data();
+    if(inv.used)return false;
+    if(inv.expiresAt&&inv.expiresAt.toDate()<new Date())return false;
+    const uDoc={uid:user.uid,email:user.email,displayName:user.displayName||user.email.split('@')[0],role:'member',photoURL:user.photoURL||'',joinedAt:serverTimestamp(),lastActive:serverTimestamp(),inviteToken:token};
+    await setDoc(doc(db,'users',user.uid),uDoc);
+    await updateDoc(inviteRef,{used:true,usedBy:user.uid,usedAt:serverTimestamp()});
+    currentUserDoc={...uDoc};
+    window.history.replaceState({},document.title,window.location.pathname);
+    pendingInviteToken=null;
+    return true;
+  }catch(e){console.error(e);return false;}
+}
+
+// ── SCREENS ────────────────────────────────────────────────────────────────
+function showAuthScreen(){hide('loading-screen');hide('app-screen');hide('invite-screen');show('auth-screen')}
+function showInviteScreen(){hide('loading-screen');hide('app-screen');hide('auth-screen');show('invite-screen')}
+
+function showApp(){
+  currentUser=auth.currentUser;
+  hide('loading-screen');hide('auth-screen');hide('invite-screen');
+  showBlock('app-screen');
+  setupTopbar();
+  window._currentUserDoc = currentUserDoc;
+  setupNotifications();
+  subscribePersonalData();
+  if(['super-admin','admin'].includes(currentUserDoc?.role)) $('admin-tab').style.display='flex';
+  switchTab('personal');
+}
+
+function setupTopbar(){
+  const u=currentUserDoc;if(!u)return;
+  const av=$('topbar-avatar');
+  if(currentUser?.photoURL) av.innerHTML=`<img src="${currentUser.photoURL}" alt="">`;
+  else av.textContent=(u.displayName||u.email||'?')[0].toUpperCase();
+  setText('topbar-name',u.displayName||u.email);
+  const rl={'super-admin':'Super Admin','admin':'Admin','member':'Member'};
+  setText('topbar-role',rl[u.role]||u.role);
+  setText('menu-name',u.displayName||u.email);
+  setText('menu-email',u.email);
+}
+
+// ── REAL-TIME PERSONAL DATA ────────────────────────────────────────────────
+function subscribePersonalData(){
+  const uid=currentUser.uid;
+  unsubPersonal();
+
+  catsUnsub=onSnapshot(
+    query(collection(db,'users',uid,'categories'),orderBy('createdAt','asc')),
+    snap=>{cats=snap.docs.map(d=>({id:d.id,...d.data()}));renderCatFilter();renderCats();populateCatSelects();}
+  );
+  tasksUnsub=onSnapshot(
+    query(collection(db,'users',uid,'tasks'),orderBy('createdAt','desc')),
+    snap=>{tasks=snap.docs.map(d=>({id:d.id,...d.data()}));if(activeTab==='personal')renderTasks();if(activeTab==='workplan')renderWorkplan();}
+  );
+  projectsUnsub=onSnapshot(
+    query(collection(db,'users',uid,'projects'),orderBy('createdAt','desc')),
+    snap=>{projects=snap.docs.map(d=>({id:d.id,...d.data()}));if(activeTab==='workplan')renderWorkplan();populateProjSelect('');}
+  );
+}
+
+function unsubPersonal(){
+  if(catsUnsub){catsUnsub();catsUnsub=null;}
+  if(tasksUnsub){tasksUnsub();tasksUnsub=null;}
+  if(projectsUnsub){projectsUnsub();projectsUnsub=null;}
+}
+function unsubAll(){
+  unsubPersonal();
+  if(notifsUnsub){notifsUnsub();notifsUnsub=null;}
+}
+
+// ── NOTIFICATIONS ──────────────────────────────────────────────────────────
+function setupNotifications(){
+  if(!currentUser)return;
+  if(notifsUnsub)notifsUnsub();
+  const q=query(collection(db,'notifications'),where('userId','==',currentUser.uid),orderBy('createdAt','desc'));
+  notifsUnsub=onSnapshot(q,snap=>{
+    const notifs=snap.docs.map(d=>({id:d.id,...d.data()}));
+    const unread=notifs.filter(n=>!n.read).length;
+    $('notif-badge').classList.toggle('show',unread>0);
+    const list=$('notif-list');
+    if(!notifs.length){list.innerHTML='<div class="notif-empty">No notifications yet</div>';return;}
+    list.innerHTML=notifs.slice(0,30).map(n=>`<div class="notif-item${n.read?'':' unread'}" onclick="markNotifRead('${n.id}')"><div class="notif-item-text">${n.message}</div><div class="notif-item-time">${fmtTime(n.createdAt)}</div></div>`).join('');
+  });
+}
+async function markNotifRead(id){await updateDoc(doc(db,'notifications',id),{read:true});}
+async function markAllNotifsRead(){
+  const q=query(collection(db,'notifications'),where('userId','==',currentUser.uid),where('read','==',false));
+  const snap=await getDocs(q);
+  await Promise.all(snap.docs.map(d=>updateDoc(d.ref,{read:true})));
+}
+
+// ── TABS ───────────────────────────────────────────────────────────────────
+function switchTab(tab){
+  activeTab=tab;
+  ['personal','workplan','categories','group','admin'].forEach(t=>{
+    const v=$('view-'+t);if(v)v.style.display=t===tab?'block':'none';
+  });
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  const tabMap={personal:0,workplan:1,categories:2,group:3,admin:4};
+  const allTabs=document.querySelectorAll('.tab');
+  // match by index based on visible tabs
+  const visibleTabs=Array.from(allTabs).filter(t=>t.style.display!=='none');
+  // simpler: toggle active by text content
+  allTabs.forEach(el=>{
+    const txt=el.textContent.trim().toLowerCase();
+    if(tab==='personal'&&txt.includes('my tasks'))el.classList.add('active');
+    else if(tab==='workplan'&&txt.includes('workplan'))el.classList.add('active');
+    else if(tab==='categories'&&txt.includes('categor'))el.classList.add('active');
+    else if(tab==='group'&&txt.includes('group'))el.classList.add('active');
+    else if(tab==='admin'&&txt.includes('admin'))el.classList.add('active');
+  });
+  if(tab==='personal')renderTasks();
+  if(tab==='workplan')renderWorkplan();
+  if(tab==='categories')renderCats();
+  if(tab==='admin')loadAdminPanel();
+}
+
+// ── TASKS ──────────────────────────────────────────────────────────────────
+function renderCatFilter(){
+  $('cat-filter').innerHTML=['All',...cats.map(c=>c.name)].map(name=>{
     const c=cats.find(x=>x.name===name);const col=c?getColor(c.color):null;
     const isActive=activeFilter===name;
     const style=isActive&&col?`background:${col.light};color:${col.text};border-color:${col.light}`:'';
     return`<button class="cat-pill${isActive?' active':''}" style="${style}" onclick="setFilter('${name}')">${name}</button>`;
   }).join('');
+}
 
+function renderTasks(){
+  renderCatFilter();
+  const q=($('search')||{value:''}).value.toLowerCase();
+  const sortBy=($('sort-by')||{value:'due'}).value;
   let vis=tasks.filter(t=>{
     if(activeFilter!=='All'){const c=getCat(t.cat);if(!c||c.name!==activeFilter)return false}
     if(q&&!t.name.toLowerCase().includes(q)&&!(t.notes||'').toLowerCase().includes(q))return false;
@@ -440,19 +834,17 @@ function renderTasks(){
   vis.sort((a,b)=>{
     if(sortBy==='urgency')return taskUrgency(b)-taskUrgency(a);
     if(sortBy==='due'){if(!a.due&&!b.due)return 0;if(!a.due)return 1;if(!b.due)return -1;return a.due.localeCompare(b.due)}
-    return b.created-a.created;
+    return(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0);
   });
-
   const done=tasks.filter(t=>t.done).length;
   const overdue=tasks.filter(t=>!t.done&&t.due&&diffDays(t.due)<0).length;
-  document.getElementById('stats-bar').innerHTML=
+  $('stats-bar').innerHTML=
     `<div class="stat"><strong>${tasks.length}</strong>total</div>`+
     `<div class="stat"><strong>${tasks.length-done}</strong>active</div>`+
     `<div class="stat"><strong>${done}</strong>done</div>`+
     (overdue?`<div class="stat" style="background:#FCEBEB;color:#A32D2D"><strong>${overdue}</strong>overdue</div>`:'');
-
-  const grid=document.getElementById('grid');
-  if(!vis.length){grid.innerHTML='<div class="empty"><i class="ti ti-checklist"></i>No tasks here yet</div>';return}
+  const grid=$('grid');
+  if(!vis.length){grid.innerHTML='<div class="empty"><i class="ti ti-checklist"></i><p>No tasks here yet</p><button class="btn btn-primary" onclick="openTaskModal(null)"><i class="ti ti-plus"></i> Add your first task</button></div>';return;}
   grid.innerHTML=vis.map(t=>{
     const cat=getCat(t.cat);const col=cat?getColor(cat.color):PALETTE[0];
     const d=fmtDue(t.due);const proj=t.proj?projects.find(p=>p.id===t.proj):null;
@@ -461,7 +853,7 @@ function renderTasks(){
       <div class="task-card-accent" style="background:${col.accent}"></div>
       <div class="task-card-header">
         <span class="task-card-title">${t.name}</span>
-        <div class="done-check${t.done?' checked':''}" onclick="event.stopPropagation();toggleDone('${t.id}')"><i class="ti ti-check"></i></div>
+        <div class="done-check${t.done?' checked':''}" onclick="event.stopPropagation();toggleDone('${t.id}',${!t.done})"><i class="ti ti-check"></i></div>
       </div>
       <div class="task-card-meta">
         <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
@@ -477,44 +869,97 @@ function renderTasks(){
   }).join('');
 }
 
-function setFilter(c){activeFilter=c;renderTasks()}
-function toggleDone(id){const t=tasks.find(x=>x.id===id);if(t){t.done=!t.done;save();if(activeTab==='tasks')renderTasks();else renderWorkplan()}}
+function setFilter(c){activeFilter=c;renderTasks();}
 
+async function toggleDone(id,val){
+  await updateDoc(doc(db,'users',currentUser.uid,'tasks',id),{done:val});
+}
+
+function populateCatSelects(){
+  ['f-cat','pf-cat'].forEach(selId=>{
+    const el=$(selId);if(!el)return;
+    const cur=el.value;
+    el.innerHTML=cats.map(c=>`<option value="${c.id}"${c.id===cur?' selected':''}>${c.name}</option>`).join('');
+  });
+}
+function populateProjSelect(val){
+  const el=$('f-project');if(!el)return;
+  el.innerHTML='<option value="">None</option>'+projects.map(p=>`<option value="${p.id}"${p.id===val?' selected':''}>${p.name}</option>`).join('');
+}
+
+function openTaskModal(id){
+  editingTaskId=id;
+  const t=id?tasks.find(x=>x.id===id):null;
+  $('task-modal-title').textContent=t?'Edit task':'New task';
+  $('f-name').value=t?.name||'';
+  populateCatSelects();
+  if(t?.cat)$('f-cat').value=t.cat;
+  $('f-due').value=t?.due||'';
+  $('f-recur').value=t?.recur||'';
+  populateProjSelect(t?.proj||'');
+  $('f-notes').value=t?.notes||'';
+  $('task-delete-btn').style.display=t?'':'none';
+  $('task-modal-bg').classList.add('open');
+  setTimeout(()=>$('f-name').focus(),50);
+}
+function openTaskModalForProj(pid){openTaskModal(null);setTimeout(()=>{$('f-project').value=pid;},80);}
+function closeTaskModal(){$('task-modal-bg').classList.remove('open');editingTaskId=null;}
+
+async function saveTask(){
+  const name=$('f-name').value.trim();if(!name)return;
+  const uid=currentUser.uid;
+  const data={name,cat:$('f-cat').value,due:$('f-due').value,recur:$('f-recur').value,proj:$('f-project').value,notes:$('f-notes').value,done:false};
+  if(editingTaskId){
+    await updateDoc(doc(db,'users',uid,'tasks',editingTaskId),data);
+  } else {
+    await addDoc(collection(db,'users',uid,'tasks'),{...data,createdAt:serverTimestamp()});
+  }
+  closeTaskModal();
+  toast('Task saved', 'success');
+}
+
+async function deleteTask(){
+  if(!editingTaskId)return;
+  await deleteDoc(doc(db,'users',currentUser.uid,'tasks',editingTaskId));
+  closeTaskModal();
+}
+
+// ── WORKPLAN ───────────────────────────────────────────────────────────────
 function renderWorkplan(){
   const scored=projects.map(p=>({p,s:scoreProject(p)})).sort((a,b)=>b.s.score-a.s.score);
-  const sa=document.getElementById('spotlight-area');
-  if(!scored.length){sa.innerHTML='';document.getElementById('projects-list').innerHTML='<div class="empty"><i class="ti ti-layout-list"></i>No projects yet — create one to get started</div>';return}
-
+  const sa=$('spotlight-area');
+  if(!scored.length){
+    sa.innerHTML='';
+    $('projects-list').innerHTML='<div class="empty"><i class="ti ti-layout-list"></i><p>No projects yet</p><button class="btn btn-primary" onclick="openProjectModal(null)"><i class="ti ti-plus"></i> Create your first project</button></div>';
+    return;
+  }
   const top=scored[0];const us=urgencyStyle(top.s.score);
   const topTasks=tasks.filter(t=>t.proj===top.p.id&&!t.done)
-    .sort((a,b)=>{const ad=a.due?diffDays(a.due):999,bd=b.due?diffDays(b.due):999;if(ad<0&&bd>=0)return-1;if(bd<0&&ad>=0)return 1;return ad-bd;})
-    .slice(0,4);
-
+    .sort((a,b)=>{const ad=a.due?diffDays(a.due):999,bd=b.due?diffDays(b.due):999;if(ad<0&&bd>=0)return-1;if(bd<0&&ad>=0)return 1;return ad-bd;}).slice(0,4);
   sa.innerHTML=`<div class="spotlight">
     <div class="spotlight-eyebrow"><i class="ti ti-alert-triangle"></i>Needs attention now</div>
     <div class="spotlight-name">${top.p.name}</div>
     <div class="spotlight-reason">${top.s.reasons.length?top.s.reasons.join(' · '):'No urgent issues detected'}</div>
-    ${topTasks.map(t=>{const d=fmtDue(t.due);return`<div class="sp-task"><div class="done-check${t.done?' checked':''}" onclick="toggleDone('${t.id}')"><i class="ti ti-check"></i></div><span class="sp-task-name${t.done?' done-t':''}">${t.name}</span>${d?`<span class="sp-due ${d.cls}">${d.label}</span>`:''}</div>`;}).join('')}
-    <div class="spotlight-actions">
+    ${topTasks.map(t=>{const d=fmtDue(t.due);return`<div class="sp-task"><div class="done-check${t.done?' checked':''}" onclick="toggleDone('${t.id}',${!t.done})"><i class="ti ti-check"></i></div><span class="sp-task-name${t.done?' done-t':''}">${t.name}</span>${d?`<span class="sp-due ${d.cls}">${d.label}</span>`:''}</div>`;}).join('')}
+    <div style="display:flex;gap:8px;margin-top:14px;flex-wrap:wrap">
       <button class="btn btn-sm" onclick="openTaskModalForProj('${top.p.id}')"><i class="ti ti-plus"></i> Add task</button>
       <button class="btn btn-sm" onclick="openProjectModal('${top.p.id}')"><i class="ti ti-pencil"></i> Edit project</button>
     </div>
   </div>`;
-
-  document.getElementById('projects-list').innerHTML=scored.map(({p,s},i)=>{
+  $('projects-list').innerHTML=scored.map(({p,s},i)=>{
     const col=getColor(p.color||'purple');
     const all=tasks.filter(t=>t.proj===p.id);const done=all.filter(t=>t.done).length;
     const pct=all.length?Math.round(done/all.length*100):0;
     const r=14;const circ=Math.round(2*Math.PI*r);const dash=Math.round(circ*pct/100);
-    const us=urgencyStyle(s.score);const d=fmtDue(p.due);
-    const body=openProjs[p.id];const projTasks=tasks.filter(t=>t.proj===p.id);
+    const us=urgencyStyle(s.score);const d=fmtDue(p.due);const body=openProjs[p.id];
+    const projTasks=tasks.filter(t=>t.proj===p.id);
     return`<div class="project-card">
       <div class="project-header" onclick="toggleProj('${p.id}')">
         <div class="project-stripe" style="background:${col.accent}"></div>
         <div class="project-info">
           <div class="project-name">${i===0?`<i class="ti ti-alert-triangle" style="font-size:13px;margin-right:4px;color:${us.color}"></i>`:''} ${p.name}</div>
           ${p.goal?`<div class="project-goal">${p.goal}</div>`:''}
-          ${d?`<div class="project-due${d.cls==='overdue'?' overdue':''}">${d.label}</div>`:''}
+          ${d?`<div class="project-due-label${d.cls==='overdue'?' overdue':''}">${d.label}</div>`:''}
         </div>
         <div class="project-right">
           <span class="urgency-chip" style="background:${us.bg};color:${us.color}">${us.label}</span>
@@ -526,30 +971,63 @@ function renderWorkplan(){
         </div>
       </div>
       ${body?`<div class="project-body">
-        ${projTasks.length?projTasks.map(t=>{const d=fmtDue(t.due);return`<div class="proj-task-row"><div class="done-check${t.done?' checked':''}" onclick="event.stopPropagation();toggleDone('${t.id}')"><i class="ti ti-check"></i></div><span class="proj-task-name${t.done?' done-t':''}">${t.name}</span>${d?`<span class="proj-due ${d.cls}">${d.label}</span>`:''}<button class="icon-btn" onclick="openTaskModal('${t.id}')"><i class="ti ti-pencil" style="font-size:13px"></i></button></div>`;}).join(''):'<div style="font-size:13px;color:var(--text-3);padding:6px 0">No tasks yet</div>'}
+        ${projTasks.length?projTasks.map(t=>{const d=fmtDue(t.due);return`<div class="proj-task-row"><div class="done-check${t.done?' checked':''}" onclick="event.stopPropagation();toggleDone('${t.id}',${!t.done})"><i class="ti ti-check"></i></div><span class="proj-task-name${t.done?' done-t':''}">${t.name}</span>${d?`<span class="proj-due ${d.cls}">${d.label}</span>`:''}<button class="icon-btn" onclick="openTaskModal('${t.id}')"><i class="ti ti-pencil" style="font-size:13px"></i></button></div>`;}).join(''):'<div style="font-size:13px;color:var(--text-3);padding:6px 0">No tasks yet</div>'}
         <div class="add-to-proj" onclick="openTaskModalForProj('${p.id}')"><i class="ti ti-plus"></i> Add task to this project</div>
       </div>`:''}
     </div>`;
   }).join('');
 }
-function toggleProj(id){openProjs[id]=!openProjs[id];renderWorkplan()}
 
-function renderCats(){
-  document.getElementById('cat-list').innerHTML=cats.map(c=>{
-    const col=getColor(c.color);const count=tasks.filter(t=>t.cat===c.id).length;
-    return`<div class="cat-item"><div class="cat-swatch" style="background:${col.accent}"></div><span class="cat-item-name">${c.name}</span><span style="font-size:12px;color:var(--text-3)">${count} task${count!==1?'s':''}</span><button class="icon-btn" onclick="openCatModal('${c.id}')"><i class="ti ti-pencil"></i></button></div>`;
-  }).join('');
+function toggleProj(id){openProjs[id]=!openProjs[id];renderWorkplan();}
+
+function openProjectModal(id){
+  editingProjId=id;const p=id?projects.find(x=>x.id===id):null;
+  $('proj-modal-title').textContent=p?'Edit project':'New project';
+  $('pf-name').value=p?.name||'';
+  $('pf-goal').value=p?.goal||'';
+  populateCatSelects();
+  if(p?.catId)$('pf-cat').value=p.catId;
+  $('pf-due').value=p?.due||'';
+  const si=$('proj-score-info');
+  if(p){const s=scoreProject(p);const us=urgencyStyle(s.score);si.style.display='';si.innerHTML=`<div class="score-info"><strong>Urgency: <span style="color:${us.color}">${us.label}</span></strong> (score ${s.score}) · Overdue: ${s.overdue} · Days left: ${s.daysLeft??'—'} · Incomplete: ${s.incompletePct}%</div>`;}
+  else si.style.display='none';
+  $('proj-delete-btn').style.display=p?'':'none';
+  $('proj-modal-bg').classList.add('open');
+  setTimeout(()=>$('pf-name').focus(),50);
+}
+function closeProjModal(){$('proj-modal-bg').classList.remove('open');editingProjId=null;}
+
+async function saveProject(){
+  const name=$('pf-name').value.trim();if(!name)return;
+  const uid=currentUser.uid;
+  const catId=$('pf-cat').value;
+  const cat=cats.find(c=>c.id===catId);
+  const data={name,goal:$('pf-goal').value,catId,color:cat?.color||'purple',due:$('pf-due').value};
+  if(editingProjId){await updateDoc(doc(db,'users',uid,'projects',editingProjId),data);}
+  else{await addDoc(collection(db,'users',uid,'projects'),{...data,createdAt:serverTimestamp()});}
+  closeProjModal();
+  toast('Project saved', 'success');
 }
 
-/* Export */
+async function deleteProject(){
+  if(!editingProjId)return;
+  const uid=currentUser.uid;
+  // Unlink tasks from this project
+  const linked=tasks.filter(t=>t.proj===editingProjId);
+  await Promise.all(linked.map(t=>updateDoc(doc(db,'users',uid,'tasks',t.id),{proj:''})));
+  await deleteDoc(doc(db,'users',uid,'projects',editingProjId));
+  closeProjModal();
+}
+
+// ── EXPORT ─────────────────────────────────────────────────────────────────
 function toggleExport(){
   exportOpen=!exportOpen;
   if(exportOpen&&exportSelected.size===0)projects.forEach(p=>exportSelected.add(p.id));
-  document.getElementById('export-panel').style.display=exportOpen?'':'none';
+  $('export-panel').style.display=exportOpen?'block':'none';
   if(exportOpen)renderExportPanel();
 }
 function renderExportPanel(){
-  document.getElementById('export-panel').innerHTML=`<div class="export-panel">
+  $('export-panel').innerHTML=`<div class="export-panel">
     <div class="export-panel-title"><i class="ti ti-file-text"></i> Export to Word — select projects</div>
     <div class="export-list">${projects.map(p=>{
       const col=getColor(p.color||'purple');const sel=exportSelected.has(p.id);
@@ -570,85 +1048,410 @@ function renderExportPanel(){
     </div>
   </div>`;
 }
-function toggleExportSel(id){if(exportSelected.has(id))exportSelected.delete(id);else exportSelected.add(id);renderExportPanel()}
+function toggleExportSel(id){if(exportSelected.has(id))exportSelected.delete(id);else exportSelected.add(id);renderExportPanel();}
 function doExport(){
   if(exportSelected.size===0)return;
-  alert('To generate a Word doc, open this task manager inside Claude and use the Export to Word button there — Claude handles the file generation.');
+  const selProjects=projects.filter(p=>exportSelected.has(p.id));
+  const payload=JSON.stringify({projects:selProjects,tasks,cats});
+  sendPrompt('__EXPORT_WORKPLAN__'+payload);
 }
 
-/* Modals */
-function populateCatSelect(id,val){document.getElementById(id).innerHTML=cats.map(c=>`<option value="${c.id}"${c.id===val?' selected':''}>${c.name}</option>`).join('')}
-function populateProjSelect(val){document.getElementById('f-project').innerHTML='<option value="">None</option>'+projects.map(p=>`<option value="${p.id}"${p.id===val?' selected':''}>${p.name}</option>`).join('')}
-
-function openTaskModal(id){
-  editingTaskId=id;const t=id?tasks.find(x=>x.id===id):null;
-  document.getElementById('task-modal-title').textContent=t?'Edit task':'New task';
-  document.getElementById('f-name').value=t?.name||'';
-  populateCatSelect('f-cat',t?.cat||cats[0]?.id);
-  document.getElementById('f-due').value=t?.due||'';
-  document.getElementById('f-recur').value=t?.recur||'';
-  populateProjSelect(t?.proj||'');
-  document.getElementById('f-notes').value=t?.notes||'';
-  document.getElementById('task-delete-btn').style.display=t?'':'none';
-  document.getElementById('task-modal-bg').classList.add('open');
-  setTimeout(()=>document.getElementById('f-name').focus(),50);
+// ── CATEGORIES ─────────────────────────────────────────────────────────────
+function renderCats(){
+  const el=$('cat-list');if(!el)return;
+  if(!cats.length){el.innerHTML='<div class="empty"><i class="ti ti-tag"></i><p>No categories yet</p></div>';return;}
+  el.innerHTML=cats.map(c=>{
+    const col=getColor(c.color);const count=tasks.filter(t=>t.cat===c.id).length;
+    return`<div class="cat-item"><div class="cat-swatch" style="background:${col.accent}"></div><span class="cat-item-name">${c.name}</span><span style="font-size:12px;color:var(--text-3)">${count} task${count!==1?'s':''}</span><button class="icon-btn" onclick="openCatModal('${c.id}')"><i class="ti ti-pencil"></i></button></div>`;
+  }).join('');
 }
-function openTaskModalForProj(pid){openTaskModal(null);setTimeout(()=>{document.getElementById('f-project').value=pid},80)}
-function closeTaskModal(){document.getElementById('task-modal-bg').classList.remove('open');editingTaskId=null}
-function saveTask(){
-  const name=document.getElementById('f-name').value.trim();if(!name)return;
-  if(editingTaskId){const t=tasks.find(x=>x.id===editingTaskId);if(t){t.name=name;t.cat=document.getElementById('f-cat').value;t.due=document.getElementById('f-due').value;t.recur=document.getElementById('f-recur').value;t.proj=document.getElementById('f-project').value;t.notes=document.getElementById('f-notes').value}}
-  else tasks.push({id:newId(),name,cat:document.getElementById('f-cat').value,due:document.getElementById('f-due').value,recur:document.getElementById('f-recur').value,proj:document.getElementById('f-project').value,notes:document.getElementById('f-notes').value,done:false,created:Date.now()});
-  save();closeTaskModal();if(activeTab==='tasks')renderTasks();else renderWorkplan();
-}
-function deleteTask(){tasks=tasks.filter(t=>t.id!==editingTaskId);save();closeTaskModal();if(activeTab==='tasks')renderTasks();else renderWorkplan()}
-
-function openProjectModal(id){
-  editingProjId=id;const p=id?projects.find(x=>x.id===id):null;
-  document.getElementById('proj-modal-title').textContent=p?'Edit project':'New project';
-  document.getElementById('pf-name').value=p?.name||'';
-  document.getElementById('pf-goal').value=p?.goal||'';
-  populateCatSelect('pf-cat',p?.catId);
-  document.getElementById('pf-due').value=p?.due||'';
-  if(p){const s=scoreProject(p);const us=urgencyStyle(s.score);document.getElementById('proj-score-info').style.display='';document.getElementById('proj-score-info').innerHTML=`<div class="score-info"><strong>Urgency: <span style="color:${us.color}">${us.label}</span></strong> (score ${s.score}) · Overdue: ${s.overdue} · Days left: ${s.daysLeft??'—'} · Incomplete: ${s.incompletePct}%</div>`;}
-  else document.getElementById('proj-score-info').style.display='none';
-  document.getElementById('proj-delete-btn').style.display=p?'':'none';
-  document.getElementById('proj-modal-bg').classList.add('open');
-  setTimeout(()=>document.getElementById('pf-name').focus(),50);
-}
-function closeProjModal(){document.getElementById('proj-modal-bg').classList.remove('open');editingProjId=null}
-function saveProject(){
-  const name=document.getElementById('pf-name').value.trim();if(!name)return;
-  const catId=document.getElementById('pf-cat').value;const cat=cats.find(c=>c.id===catId);
-  if(editingProjId){const p=projects.find(x=>x.id===editingProjId);if(p){p.name=name;p.goal=document.getElementById('pf-goal').value;p.catId=catId;p.color=cat?.color||'purple';p.due=document.getElementById('pf-due').value}}
-  else projects.push({id:newId(),name,goal:document.getElementById('pf-goal').value,catId,color:cat?.color||'purple',due:document.getElementById('pf-due').value});
-  save();closeProjModal();renderWorkplan();
-}
-function deleteProject(){tasks.forEach(t=>{if(t.proj===editingProjId)t.proj=''});projects=projects.filter(p=>p.id!==editingProjId);save();closeProjModal();renderWorkplan()}
 
 function buildColorPicker(){
-  document.getElementById('color-picker').innerHTML=PALETTE.map(p=>`<div class="color-opt${selColor===p.name?' sel':''}" style="background:${p.accent}" onclick="selColor='${p.name}';buildColorPicker()" title="${p.name}"></div>`).join('');
+  $('color-picker').innerHTML=PALETTE.map(p=>`<div class="color-opt${selColor===p.name?' sel':''}" style="background:${p.accent}" onclick="selColor='${p.name}';buildColorPicker()" title="${p.name}"></div>`).join('');
 }
 function openCatModal(id){
   editingCatId=id;const c=id?cats.find(x=>x.id===id):null;
-  document.getElementById('cat-modal-title').textContent=c?'Edit category':'New category';
-  document.getElementById('cf-name').value=c?.name||'';
+  $('cat-modal-title').textContent=c?'Edit category':'New category';
+  $('cf-name').value=c?.name||'';
   selColor=c?.color||'purple';buildColorPicker();
-  document.getElementById('cat-delete-btn').style.display=c?'':'none';
-  document.getElementById('cat-modal-bg').classList.add('open');
-  setTimeout(()=>document.getElementById('cf-name').focus(),50);
+  $('cat-delete-btn').style.display=c?'':'none';
+  $('cat-modal-bg').classList.add('open');
+  setTimeout(()=>$('cf-name').focus(),50);
 }
-function closeCatModal(){document.getElementById('cat-modal-bg').classList.remove('open');editingCatId=null}
-function saveCat(){
-  const name=document.getElementById('cf-name').value.trim();if(!name)return;
-  if(editingCatId){const c=cats.find(x=>x.id===editingCatId);if(c){c.name=name;c.color=selColor}}
-  else cats.push({id:newId(),name,color:selColor});
-  save();closeCatModal();renderCats();renderTasks();
-}
-function deleteCat(){cats=cats.filter(c=>c.id!==editingCatId);save();closeCatModal();renderCats();renderTasks()}
+function closeCatModal(){$('cat-modal-bg').classList.remove('open');editingCatId=null;}
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeTaskModal();closeProjModal();closeCatModal()}});
-renderTasks();
+async function saveCat(){
+  const name=$('cf-name').value.trim();if(!name)return;
+  const uid=currentUser.uid;
+  if(editingCatId){await updateDoc(doc(db,'users',uid,'categories',editingCatId),{name,color:selColor});}
+  else{await addDoc(collection(db,'users',uid,'categories'),{name,color:selColor,createdAt:serverTimestamp()});}
+  closeCatModal();
+  toast('Category saved', 'success');
+}
+
+async function deleteCat(){
+  if(!editingCatId)return;
+  const uid=currentUser.uid;
+  // Remove category from tasks that use it
+  const linked=tasks.filter(t=>t.cat===editingCatId);
+  await Promise.all(linked.map(t=>updateDoc(doc(db,'users',uid,'tasks',t.id),{cat:''})));
+  await deleteDoc(doc(db,'users',uid,'categories',editingCatId));
+  closeCatModal();
+}
+
+// ── AUTH FLOWS ─────────────────────────────────────────────────────────────
+function toggleAuthMode(){
+  authMode=authMode==='signin'?'signup':'signin';
+  $('email-auth-btn').textContent=authMode==='signup'?'Create account':'Sign in';
+  $('auth-toggle-text').innerHTML=authMode==='signup'?'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>':"Don't have an account? <a onclick=\"toggleAuthMode()\">Create one</a>";
+  $('auth-sub').textContent=authMode==='signup'?'Create your account to get started.':'Sign in to access your workspace.';
+  hideErr('auth-error');
+}
+
+async function signInGoogle(){
+  hideErr('auth-error');
+  try{await signInWithPopup(auth,new GoogleAuthProvider());}
+  catch(e){showErr('auth-error',friendlyErr(e));}
+}
+async function submitEmailAuth(){
+  hideErr('auth-error');
+  const email=$('auth-email').value.trim(),pw=$('auth-password').value;
+  if(!email||!pw){showErr('auth-error','Please enter your email and password.');return;}
+  try{
+    if(authMode==='signup'){
+      if(email!==SUPER_ADMIN_EMAIL){showErr('auth-error','Account creation requires an invite link.');return;}
+      await createUserWithEmailAndPassword(auth,email,pw);
+    }else{await signInWithEmailAndPassword(auth,email,pw);}
+  }catch(e){showErr('auth-error',friendlyErr(e));}
+}
+async function redeemInviteGoogle(){
+  hideErr('invite-error');
+  try{await signInWithPopup(auth,new GoogleAuthProvider());}
+  catch(e){showErr('invite-error',friendlyErr(e));}
+}
+async function redeemInvite(){
+  hideErr('invite-error');
+  const email=$('invite-email').value.trim(),pw=$('invite-password').value,name=$('invite-name').value.trim();
+  if(!email||!pw||!name){showErr('invite-error','Please fill in all fields.');return;}
+  if(pw.length<6){showErr('invite-error','Password must be at least 6 characters.');return;}
+  try{
+    const cred=await createUserWithEmailAndPassword(auth,email,pw);
+    await updateProfile(cred.user,{displayName:name});
+  }catch(e){showErr('invite-error',friendlyErr(e));}
+}
+function friendlyErr(e){
+  const m={'auth/invalid-email':'Invalid email address.','auth/user-not-found':'No account found with that email.','auth/wrong-password':'Incorrect password.','auth/email-already-in-use':'An account with that email already exists.','auth/weak-password':'Password must be at least 6 characters.','auth/popup-closed-by-user':'Sign-in was cancelled.','auth/invalid-credential':'Incorrect email or password.'};
+  return m[e.code]||e.message||'Something went wrong. Please try again.';
+}
+async function doSignOut(){unsubAll();hide('user-menu');await signOut(auth);}
+
+// ── ADMIN ──────────────────────────────────────────────────────────────────
+async function loadAdminPanel(){loadInvites();loadUsers();loadAdminGroupProjects();}
+
+async function loadInvites(){
+  const container=$('invites-list');
+  try{
+    const q=query(collection(db,'invites'),where('used','==',false),orderBy('createdAt','desc'));
+    const snap=await getDocs(q);const now=new Date();
+    const active=snap.docs.map(d=>({id:d.id,...d.data()})).filter(inv=>!inv.expiresAt||inv.expiresAt.toDate()>now);
+    if(!active.length){container.innerHTML='<div style="font-size:13px;color:var(--text-3);padding:8px 0">No active invite links.</div>';return;}
+    container.innerHTML=active.map(inv=>`<div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div><div style="font-size:13px;font-weight:500">${inv.note||'No note'}</div><div style="font-size:12px;color:var(--text-3);margin-top:2px">Expires ${fmtDate(inv.expiresAt)} · Single use</div></div>
+        <div style="display:flex;gap:6px;"><button class="btn btn-sm" onclick="copyLink('${inv.link}')"><i class="ti ti-copy"></i> Copy</button><button class="btn btn-sm btn-danger" onclick="revokeInvite('${inv.id}')"><i class="ti ti-x"></i> Revoke</button></div>
+      </div>
+    </div>`).join('');
+  }catch(e){container.innerHTML='<div style="color:#A32D2D;font-size:13px">Error loading invites.</div>';console.error(e);}
+}
+
+async function loadUsers(){
+  const container=$('users-list');
+  try{
+    const snap=await getDocs(collection(db,'users'));
+    const users=snap.docs.map(d=>d.data()).sort((a,b)=>{const o={'super-admin':0,'admin':1,'member':2};return(o[a.role]??3)-(o[b.role]??3);});
+    if(!users.length){container.innerHTML='<div style="font-size:13px;color:var(--text-3)">No users yet.</div>';return;}
+    const isSA=currentUserDoc?.role==='super-admin';
+    container.innerHTML=`<div style="overflow-x:auto"><table class="user-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Joined</th><th>Last active</th><th></th></tr></thead><tbody>${
+      users.map(u=>{
+        const isMe=u.uid===currentUser?.uid;
+        const rc={'super-admin':'role-super','admin':'role-admin','member':'role-member'}[u.role]||'role-member';
+        const rl={'super-admin':'Super Admin','admin':'Admin','member':'Member'}[u.role]||u.role;
+        let actions='';
+        if(!isMe){
+          if(isSA){
+            if(u.role==='member')actions+=`<button class="btn btn-sm" onclick="openRoleModal('${u.uid}','${u.displayName}','admin')" style="margin-right:4px">Make Admin</button>`;
+            if(u.role==='admin')actions+=`<button class="btn btn-sm" onclick="openRoleModal('${u.uid}','${u.displayName}','member')" style="margin-right:4px">Demote</button>`;
+            if(u.role==='admin')actions+=`<button class="btn btn-sm" onclick="openRoleModal('${u.uid}','${u.displayName}','super-admin')" style="margin-right:4px">Make Super Admin</button>`;
+          }else if(currentUserDoc?.role==='admin'){
+            if(u.role==='member')actions+=`<button class="btn btn-sm" onclick="openRoleModal('${u.uid}','${u.displayName}','admin')" style="margin-right:4px">Make Admin</button>`;
+            if(u.role==='admin')actions+=`<button class="btn btn-sm" onclick="openRoleModal('${u.uid}','${u.displayName}','member')" style="margin-right:4px">Demote</button>`;
+          }
+          if(u.role!=='super-admin')actions+=`<button class="btn btn-sm btn-danger" onclick="openRemoveModal('${u.uid}','${u.displayName}')">Remove</button>`;
+        }
+        return`<tr><td style="font-weight:500">${u.displayName||'—'}</td><td style="color:var(--text-2)">${u.email}</td><td><span class="role-badge ${rc}">${rl}</span></td><td style="color:var(--text-2)">${fmtDate(u.joinedAt)}</td><td style="color:var(--text-2)">${fmtTime(u.lastActive)}</td><td style="white-space:nowrap">${actions}</td></tr>`;
+      }).join('')
+    }</tbody></table></div>`;
+  }catch(e){container.innerHTML='<div style="color:#A32D2D;font-size:13px">Error loading users.</div>';console.error(e);}
+}
+
+function openInviteModal(){$('invite-note').value='';$('invite-result').style.display='none';$('gen-invite-btn').style.display='inline-flex';$('invite-modal').classList.add('open');}
+function closeInviteModal(){$('invite-modal').classList.remove('open');loadInvites();}
+
+async function generateInvite(){
+  const note=$('invite-note').value.trim();
+  const btn=$('gen-invite-btn');btn.innerHTML='<div class="spinner"></div>';btn.disabled=true;
+  try{
+    const token=[...crypto.getRandomValues(new Uint8Array(20))].map(b=>b.toString(16).padStart(2,'0')).join('');
+    const expiresAt=new Date(Date.now()+7*24*60*60*1000);
+    const link=`${window.location.origin}${window.location.pathname}?invite=${token}`;
+    await setDoc(doc(db,'invites',token),{token,note:note||'',link,createdBy:currentUser.uid,createdAt:serverTimestamp(),expiresAt:Timestamp.fromDate(expiresAt),used:false});
+    generatedInviteLink=link;
+    $('invite-link-text').textContent=link;
+    $('invite-meta').textContent=`Expires ${fmtDate(Timestamp.fromDate(expiresAt))} · Single use`;
+    $('invite-result').style.display='block';
+    btn.style.display='none';
+  }catch(e){console.error(e);toast('Error generating invite link. Please try again.', 'error');}
+  finally{btn.innerHTML='<i class="ti ti-link"></i> Generate';btn.disabled=false;}
+}
+
+function copyInviteLink(){
+  navigator.clipboard.writeText(generatedInviteLink).then(()=>{
+    const btn=document.querySelector('#invite-result .btn-success');
+    btn.innerHTML='<i class="ti ti-check"></i> Copied!';
+    setTimeout(()=>{btn.innerHTML='<i class="ti ti-copy"></i> Copy link';},2000);
+  });
+}
+function copyLink(link){navigator.clipboard.writeText(link).then(()=>toast('Link copied to clipboard','success'));}
+async function revokeInvite(id){if(!confirm('Revoke this invite link?'))return;await deleteDoc(doc(db,'invites',id));loadInvites();}
+
+function openRoleModal(uid,name,newRole){
+  roleChangeTarget={uid,newRole};
+  const rl={'super-admin':'Super Admin','admin':'Admin','member':'Member'};
+  $('role-modal-title').textContent='Change role';
+  $('role-modal-body').textContent=`Change ${name}'s role to ${rl[newRole]}?`;
+  $('role-modal').classList.add('open');
+}
+function closeRoleModal(){$('role-modal').classList.remove('open');roleChangeTarget=null;}
+async function confirmRoleChange(){
+  if(!roleChangeTarget)return;
+  await updateDoc(doc(db,'users',roleChangeTarget.uid),{role:roleChangeTarget.newRole});
+  closeRoleModal();loadUsers();
+}
+
+function openRemoveModal(uid,name){
+  removeUserTarget=uid;
+  $('remove-modal-body').textContent=`Remove ${name}? They will lose access immediately.`;
+  $('remove-modal').classList.add('open');
+}
+function closeRemoveModal(){$('remove-modal').classList.remove('open');removeUserTarget=null;}
+async function confirmRemoveUser(){
+  if(!removeUserTarget)return;
+  await deleteDoc(doc(db,'users',removeUserTarget));
+  closeRemoveModal();loadUsers();
+}
+
+// ── UI ─────────────────────────────────────────────────────────────────────
+function toggleNotifPanel(){$('notif-panel').classList.toggle('open');$('user-menu').style.display='none';}
+function toggleUserMenu(){const m=$('user-menu');m.style.display=m.style.display==='block'?'none':'block';$('notif-panel').classList.remove('open');}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#notif-panel')&&!e.target.closest('#notif-btn'))$('notif-panel')?.classList.remove('open');
+  if(!e.target.closest('#user-menu')&&!e.target.closest('.user-pill'))if($('user-menu'))$('user-menu').style.display='none';
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){[$('task-modal-bg'),$('proj-modal-bg'),$('cat-modal-bg'),$('invite-modal'),$('role-modal'),$('remove-modal')].forEach(m=>{if(m)m.classList.remove('open')});}});
+
+// ── EXPOSE GLOBALS ─────────────────────────────────────────────────────────
+Object.assign(window,{
+  signInGoogle,submitEmailAuth,toggleAuthMode,
+  redeemInvite,redeemInviteGoogle,doSignOut,
+  switchTab,toggleNotifPanel,toggleUserMenu,
+  markNotifRead,markAllNotifsRead,
+  renderTasks,setFilter,openTaskModal,closeTaskModal,saveTask,deleteTask,
+  openTaskModalForProj,toggleDone,
+  renderWorkplan,toggleProj,openProjectModal,closeProjModal,saveProject,deleteProject,
+  toggleExport,toggleExportSel,doExport,
+  renderCats,openCatModal,closeCatModal,saveCat,deleteCat,buildColorPicker,
+  openInviteModal,closeInviteModal,generateInvite,copyInviteLink,copyLink,revokeInvite,
+  openRoleModal,closeRoleModal,confirmRoleChange,
+  openRemoveModal,closeRemoveModal,confirmRemoveUser,
+  selColor,
+  loadAdminGroupProjects,
+  toast,
+});
+
+
+// ── ADMIN GROUP PROJECTS VIEW ──────────────────────────────────────────────
+async function loadAdminGroupProjects(){
+  const container=$('admin-group-list');
+  if(!container)return;
+  try{
+    const snap=await getDocs(query(collection(db,'groupProjects'),orderBy('createdAt','desc')));
+    const gps=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!gps.length){container.innerHTML='<div style="font-size:13px;color:var(--text-3)">No group projects yet.</div>';return;}
+    container.innerHTML=`<div style="overflow-x:auto"><table class="user-table">
+      <thead><tr><th>Project</th><th>Goal</th><th>Leads</th><th>Members</th><th>Visibility</th><th>Due</th></tr></thead>
+      <tbody>${await Promise.all(gps.map(async p=>{
+        const leads=p.leads||[];const members=p.members||[];
+        const allUids=[...new Set([...leads,...members])];
+        const memberDocs=await Promise.all(allUids.slice(0,3).map(uid=>getDoc(doc(db,'users',uid))));
+        const leadNames=leads.slice(0,2).map(uid=>{const d=memberDocs.find(m=>m.id===uid);return d?.data()?.displayName||uid;}).join(', ')+(leads.length>2?` +${leads.length-2}`:'');
+        const due=p.due?new Date(p.due+'T00:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric',year:'numeric'}):'—';
+        return`<tr>
+          <td style="font-weight:500">${p.name}</td>
+          <td style="color:var(--text-2);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.goal||'—'}</td>
+          <td style="color:var(--text-2)">${leadNames||'—'}</td>
+          <td style="color:var(--text-2)">${allUids.length}</td>
+          <td><span style="font-size:11px;padding:2px 8px;border-radius:20px;${p.isPrivate?'background:#F1EFE8;color:#2C2C2A':'background:#E1F5EE;color:#085041'}">${p.isPrivate?'Private':'Public'}</span></td>
+          <td style="color:var(--text-2)">${due}</td>
+        </tr>`;
+      })).then(rows=>rows.join(''))}</tbody>
+    </table></div>`;
+  }catch(e){container.innerHTML='<div style="color:#A32D2D;font-size:13px">Error loading group projects.</div>';console.error(e);}
+}
+
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+function toast(msg, type='', duration=3000){
+  const tc=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className='toast'+(type?' '+type:'');
+  const icon={'success':'<i class="ti ti-check"></i>','error':'<i class="ti ti-x"></i>','warning':'<i class="ti ti-alert-triangle"></i>'}[type]||'<i class="ti ti-info-circle"></i>';
+  t.innerHTML=icon+' '+msg;
+  tc.appendChild(t);
+  setTimeout(()=>{t.style.animation='slideOut .2s ease forwards';setTimeout(()=>t.remove(),200);},duration);
+}
+
+// ── BOOT ───────────────────────────────────────────────────────────────────
+checkInviteToken();
+
+function checkInviteToken(){
+  const params=new URLSearchParams(window.location.search);
+  const token=params.get('invite');
+  if(token)pendingInviteToken=token;
+}
 </script>
 </body>
 </html>
+<!-- GROUP PROJECT MODAL -->
+<div class="modal-overlay" id="group-proj-modal" onclick="if(event.target===this)closeGroupProjModal()">
+<div class="modal">
+  <h2 id="gpf-modal-title">New group project</h2>
+  <div class="field"><label>Project name</label><input type="text" id="gpf-name" placeholder="e.g. Q3 marketing campaign"></div>
+  <div class="field"><label>Goal</label><textarea id="gpf-goal" placeholder="What does success look like?"></textarea></div>
+  <div class="two-col">
+    <div class="field"><label>Target date</label><input type="date" id="gpf-due"></div>
+    <div class="field" style="display:flex;align-items:center;gap:10px;padding-top:22px">
+      <input type="checkbox" id="gpf-private" style="width:auto;flex-shrink:0">
+      <label for="gpf-private" style="margin:0;cursor:pointer">Private (invite only)</label>
+    </div>
+  </div>
+  <div class="field"><label>Colour</label><div class="color-row" id="group-color-picker"></div></div>
+  <div class="modal-footer">
+    <button class="btn btn-danger" id="gpf-delete-btn" onclick="deleteGroupProject()" style="display:none;margin-right:auto">Delete project</button>
+    <button class="btn" onclick="closeGroupProjModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveGroupProject()">Save project</button>
+  </div>
+</div>
+</div>
+
+<!-- DELIVERABLE MODAL -->
+<div class="modal-overlay" id="del-modal" onclick="if(event.target===this)closeDeliverableModal()">
+<div class="modal">
+  <h2>Assign deliverable</h2>
+  <div class="field"><label>Deliverable name</label><input type="text" id="df-name" placeholder="What needs to be delivered?"></div>
+  <div class="field"><label>Description / instructions</label><textarea id="df-desc" placeholder="Context, requirements, any details the assignee needs…"></textarea></div>
+  <div class="two-col">
+    <div class="field"><label>Assign to</label><select id="df-assignee"></select></div>
+    <div class="field"><label>Deadline</label><input type="date" id="df-deadline"></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+    <input type="checkbox" id="df-urgent" style="width:auto;flex-shrink:0">
+    <label for="df-urgent" style="margin:0;cursor:pointer;font-size:13px">Mark as urgent</label>
+  </div>
+  <div class="modal-footer">
+    <button class="btn" onclick="closeDeliverableModal()">Cancel</button>
+    <button class="btn btn-primary" onclick="saveDeliverable()">Save deliverable</button>
+  </div>
+</div>
+</div>
+
+<script type="module">
+// Phase 3 group module bootstrap
+// Import group module functions and wire them in after main app loads
+import { initGroup, exportGroupProjectDocx } from './group.js';
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+  collection, query, where, orderBy, onSnapshot, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey:"AIzaSyBFPIJJluX60Qcc2Einfz5OZSar88lW_7c",
+  authDomain:"posse-task-manager.firebaseapp.com",
+  projectId:"posse-task-manager",
+  storageBucket:"posse-task-manager.firebasestorage.app",
+  messagingSenderId:"357856470377",
+  appId:"1:357856470377:web:9f913750cdd6e8ef8989f8"
+};
+
+const firebaseApp2 = initializeApp(firebaseConfig, 'group-module');
+const db2 = getFirestore(firebaseApp2);
+const auth2 = getAuth(firebaseApp2);
+
+const PALETTE=[
+  {name:'purple',accent:'#534AB7',light:'#EEEDFE',text:'#3C3489'},
+  {name:'pink',accent:'#D4537E',light:'#FBEAF0',text:'#72243E'},
+  {name:'teal',accent:'#1D9E75',light:'#E1F5EE',text:'#085041'},
+  {name:'amber',accent:'#BA7517',light:'#FAEEDA',text:'#633806'},
+  {name:'blue',accent:'#378ADD',light:'#E6F1FB',text:'#0C447C'},
+  {name:'coral',accent:'#D85A30',light:'#FAECE7',text:'#712B13'},
+  {name:'green',accent:'#639922',light:'#EAF3DE',text:'#27500A'},
+  {name:'red',accent:'#A32D2D',light:'#FCEBEB',text:'#501313'},
+  {name:'gray',accent:'#5F5E5A',light:'#F1EFE8',text:'#2C2C2A'},
+];
+function getColor(n){return PALETTE.find(p=>p.name===n)||PALETTE[0];}
+function diffDays(d){if(!d)return null;const t=new Date();t.setHours(0,0,0,0);return Math.round((new Date(d+'T00:00:00')-t)/86400000);}
+function fmtDue(d){
+  if(!d)return null;const diff=diffDays(d);
+  if(diff===0)return{label:'Today',cls:'today'};
+  if(diff===1)return{label:'Tomorrow',cls:''};
+  if(diff<0)return{label:Math.abs(diff)+'d overdue',cls:'overdue'};
+  if(diff<=7)return{label:'In '+diff+'d',cls:'soon'};
+  return{label:new Date(d+'T00:00:00').toLocaleDateString('en-CA',{month:'short',day:'numeric'}),cls:''};
+}
+function fmtTime(ts){
+  if(!ts)return'';const d=ts.toDate?ts.toDate():new Date(ts);
+  const diff=Math.round((Date.now()-d)/60000);
+  if(diff<1)return'just now';if(diff<60)return diff+'m ago';
+  if(diff<1440)return Math.round(diff/60)+'h ago';return Math.round(diff/1440)+'d ago';
+}
+async function addNotification(userId, message){
+  await addDoc(collection(db2,'notifications'),{userId,message,read:false,createdAt:serverTimestamp()});
+}
+
+onAuthStateChanged(auth2, user => {
+  if (!user) return;
+  // Wait briefly for main module to set currentUserDoc
+  setTimeout(() => {
+    const currentUserDoc = window._currentUserDoc || { displayName: user.displayName || user.email, email: user.email };
+    const group = initGroup({
+      db: db2, currentUser: user, currentUserDoc,
+      addNotification,
+      collection, doc, getDoc, getDocs, setDoc, addDoc, updateDoc, deleteDoc,
+      query, where, orderBy, onSnapshot, serverTimestamp,
+      fmtDue, fmtTime, diffDays, PALETTE, getColor
+    });
+    // Expose all group functions globally
+    Object.assign(window, group);
+    window.doGroupExport = group.doGroupExport;
+    // Subscribe to group projects
+    group.subscribeGroupProjects();
+    // Override switchTab to trigger group render
+    const originalSwitch = window.switchTab;
+    window.switchTab = function(tab) {
+      originalSwitch(tab);
+      if (tab === 'group') group.renderGroupProjects();
+    };
+  }, 800);
+});
+</script>
